@@ -1,6 +1,7 @@
 import torch
 from tqdm.notebook import tqdm
 
+from sklearn.metrics import confusion_matrix
 from cnn import device
 
 from util.logger_util import log
@@ -10,6 +11,8 @@ from util.tensorboard_util import writer
 def test_model(model, test_loader, iterator=0):
     correct = 0
     total = len(test_loader.dataset)
+
+    prediction_list, label_list = [], []
 
     # set the model into evaluation mode
     model = model.eval()
@@ -24,8 +27,13 @@ def test_model(model, test_loader, iterator=0):
             y = model(inputs)
 
             predictions = torch.argmax(y, dim=1)
+            prediction_list.extend(predictions)
+            label_list.extend(labels)
+
             truths = torch.sum((predictions == labels).float()).item()
             correct += truths
+
+    log.info("Confusion Matrix:\n{}".format(confusion_matrix(prediction_list, label_list)))
 
     acc = (correct / total)
     log.info('\nTest accuracy: {}'.format(acc))
