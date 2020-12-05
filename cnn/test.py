@@ -34,7 +34,7 @@ def test_model(model, test_loader, iterator=0):
             correct += truths
 
     log.info("Confusion Matrix:")
-    log.info(confusion_matrix(prediction_list, label_list))
+    log.info(confusion_matrix([p.detach() for p in prediction_list], [l.detach() for l in label_list]))
 
     acc = (correct / total)
     log.info('\nTest accuracy: {}'.format(acc))
