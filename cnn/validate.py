@@ -4,14 +4,16 @@ from tqdm.notebook import tqdm
 from cnn import device
 
 from util.logger_util import log
+from util.tensorboard_util import writer
 
 
-def validate_model(model, test_loader, iterator):
+def validate_model(model, test_loader, metric, iterator):
     correct = 0
-    total = len(test_loader)
+    total = len(test_loader.dataset)
 
     # set the model into evaluation mode
     model = model.eval()
+    metric = metric.eval()
 
     # behavior of the batch norm layer so that it is not sensitive to batch size
     with torch.no_grad():
@@ -20,11 +22,17 @@ def validate_model(model, test_loader, iterator):
             # Forward pass
             inputs = images.to(device)
             labels = labels.to(device)
-            y = model(inputs)
+            outputs = model(inputs)
 
-            predictions = torch.argmax(y, dim=1)
-            correct += torch.sum((predictions == labels).float())
+            predictions = torch.argmax(outputs, dim=1)
+            truths = torch.sum((predictions == labels).float()).item()
+            correct += truths
 
-    log.info('\n{}th Validation accuracy: {}'.format(iterator, correct / total))
+            loss = metric(outputs, labels).item()
 
-    return 100 * correct / total
+    acc = correct / total
+    writer.add_scalar("Loss/Train", loss, acc)
+    log.info("{}th Validation --> Loss: {} - Accuracy: {}"
+             .format(iterator,
+                     round(loss, 6),
+                     round(acc, 6)))

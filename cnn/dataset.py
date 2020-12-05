@@ -87,3 +87,12 @@ def set_transform(resize=224, crop=224, normalize=None, additional=None):
     ])
 
     return transforms.Compose(transform_list)
+
+
+def inv_normalize(tensor, normalize=None):
+    if normalize is None or normalize is True:
+        normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
+
+    mean, std = normalize[0], normalize[1]
+
+    return transforms.Normalize(mean=[-m/s for m, s in zip(mean, std)], std=[1/s for s in std])(tensor)

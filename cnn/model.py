@@ -20,7 +20,7 @@ from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, test_data, validation_freq, num_epochs=25, save=False,
+def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
     
@@ -102,7 +102,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
         train_model(model, train_loader, test_loader, metric, optimizer, num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq)
 
     log.info("Testing the model")
-    test_acc = test_model(model, test_loader, test_data)
+    test_acc = test_model(model, test_loader)
 
     verified = False
 
@@ -124,7 +124,6 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     if save and verified:
         save_model(model=model, path=("" if not is_pre_trained else "PreTrained_") + model_name + "_" + dataset_folder + "_out.pth", optimizer=optimizer)
 
-    writer.close()
     return model
 
 
