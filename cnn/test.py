@@ -28,17 +28,13 @@ def test_model(model, test_loader, iterator=0):
 
             predictions = torch.argmax(y, dim=1)
             prediction_list.extend([p.item() for p in predictions])
-            label_list.extend(labels)
+            label_list.extend([l.item() for l in label_list])
 
             truths = torch.sum((predictions == labels).float()).item()
             correct += truths
 
-    print(len(prediction_list))
-    print(prediction_list[0].shape)
-    print(len(label_list))
-    print(label_list[0].shape)
     log.info("Confusion Matrix:")
-    log.info(confusion_matrix([p.detach() for p in prediction_list], [l.detach() for l in label_list]))
+    log.info(confusion_matrix(label_list, prediction_list))
 
     acc = (correct / total)
     log.info('\nTest accuracy: {}'.format(acc))
