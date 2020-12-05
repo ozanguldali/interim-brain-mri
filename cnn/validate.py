@@ -6,7 +6,7 @@ from cnn import device
 from util.logger_util import log
 
 
-def validate_model(model, test_loader, iterator):
+def validate_model(model, test_loader, metric, iterator):
     correct = 0
     total = len(test_loader)
 
@@ -20,11 +20,17 @@ def validate_model(model, test_loader, iterator):
             # Forward pass
             inputs = images.to(device)
             labels = labels.to(device)
-            y = model(inputs)
+            outputs = model(inputs)
 
-            predictions = torch.argmax(y, dim=1)
+            predictions = torch.argmax(outputs, dim=1)
             correct += torch.sum((predictions == labels).float())
+            accuracy = correct / total
 
-    log.info('\n{}th Validation accuracy: {}'.format(iterator, correct / total))
+            loss = metric(outputs, labels)
 
-    return 100 * correct / total
+    log.info("{}th validation loss and accuracy on epoch: {} - {} "
+             .format(iterator,
+                     round(loss.item(), 4),
+                     round(accuracy.item(), 4)))
+
+    return 100 * accuracy

@@ -6,9 +6,9 @@ from cnn import device
 from util.logger_util import log
 
 
-def test_model(model, test_loader, test_data):
+def test_model(model, test_loader):
     correct = 0
-    total = len(test_data)
+    total = len(test_loader)
 
     # set the model into evaluation mode
     model = model.eval()
