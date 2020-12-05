@@ -33,6 +33,10 @@ def test_model(model, test_loader, iterator=0):
             truths = torch.sum((predictions == labels).float()).item()
             correct += truths
 
+    print(len(prediction_list))
+    print(prediction_list[0].shape)
+    print(len(label_list))
+    print(label_list[0].shape)
     log.info("Confusion Matrix:")
     log.info(confusion_matrix([p.detach() for p in prediction_list], [l.detach() for l in label_list]))
 
