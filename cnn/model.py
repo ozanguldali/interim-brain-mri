@@ -20,7 +20,7 @@ from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, num_epochs=25, save=False,
+def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr, momentum, partial, betas, weight_decay, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
     
@@ -76,17 +76,16 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     log.info("Setting the metric")
     metric = nn.CrossEntropyLoss()
 
-    lr = 0.1
     if optimizer_name == optim.Adam.__name__:
         optimizer = optim.Adam(model.parameters(), lr=lr)
     elif optimizer_name == optim.SGD.__name__:
-        optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=(0.9, 0.99), weight_decay=0.025)
+        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=betas, weight_decay=weight_decay)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=(0.9, 0.99), weight_decay=0.025)
+        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=betas, weight_decay=weight_decay)
     elif optimizer_name == padam.Padam.__name__:
-        optimizer = padam.Padam(model.parameters(), lr=lr, partial=0.125, weight_decay=0.025, betas=(0.9, 0.99))
+        optimizer = padam.Padam(model.parameters(), lr=lr, partial=partial, weight_decay=weight_decay, betas=betas)
     else:
         log.fatal("not implemented optimizer name: {}".format(optimizer_name))
         sys.exit(1)
