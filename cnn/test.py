@@ -28,7 +28,7 @@ def test_model(model, test_loader, iterator=0):
 
             predictions = torch.argmax(y, dim=1)
             prediction_list.extend([p.item() for p in predictions])
-            label_list.extend([l.item() for l in label_list])
+            label_list.extend([l.item() for l in labels])
 
             truths = torch.sum((predictions == labels).float()).item()
             correct += truths
