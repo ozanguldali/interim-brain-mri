@@ -39,7 +39,7 @@ def test_model(model, test_loader, iterator=0):
         writer.add_scalar("Acc/Validation", acc, iterator)
 
     conf_matrix = confusion_matrix(label_list, prediction_list)
-    log.info("Confusion Matrix:\n{} | {}\n---|---\n{} | {}"
+    log.info("Confusion Matrix:\n_________\n| {} | {} | \n|---|---|\n| {} | {} |\n_________"
              .format(conf_matrix[0, 0], conf_matrix[0, 1], conf_matrix[1, 0], conf_matrix[1, 1]))
 
     return 100 * acc
