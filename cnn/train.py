@@ -17,43 +17,36 @@ from cnn.validate import validate_model
 def train_model(model, train_loader, test_loader, metric, optimizer, validation_freq, num_epochs=25, update_loss=False):
     learning_rate = 0.0001
     total_loss_history = []
-    total_accuracy_history = []
+    total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
 
     log.info("Training the model")
     # Iterate through train set mini batches
     for epoch in trange(num_epochs):
+        correct = 0
+        total = len(train_loader.dataset)
         update = update_loss
         loss_history = []
-        accuracy_history = []
-        correct = 0
-        total = len(train_loader)
-
+        acc_history = []
         for e, (images, labels) in enumerate(train_loader):  # tqdm
             # zero the parameter gradients
             optimizer.zero_grad()
 
             inputs = images.to(device)
             labels = labels.to(device)
-            writer.add_image("{} - input image".format(labels[0]), inputs[0], epoch)
 
             # Do the forward pass
             outputs = model(inputs)
 
             predictions = torch.argmax(outputs, dim=1)
-            correct += torch.sum((predictions == labels).float())
-            accuracy = correct / total
-            accuracy_history.append(accuracy.item())
-            total_accuracy_history.append(accuracy.item())
-            writer.add_scalar("Accuracy/train", accuracy, epoch)
+            truths = torch.sum((predictions == labels).float())
+            correct += truths.item()
 
             loss = metric(outputs, labels)
             loss_history.append(loss.item())
-            total_loss_history.append(loss.item())
-            writer.add_scalar("Loss/train", loss, epoch)
 
             if update \
-                    and (epoch != 0 and epoch != num_epochs - 1) \
+                    and (epoch != 0 and epoch != num_epochs - 1)\
                     and e == len(train_loader) - 1 \
                     and (epoch + 1) % int(num_epochs / 4) == 0:
                 update = False
@@ -66,26 +59,31 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
             optimizer.step()
 
         log.info("\nIteration number on epoch %d / %d is %d" % (epoch + 1, num_epochs, len(loss_history)))
-        log.info("Average training loss and accuracy on epoch {}: {} - {} "
+        epoch_loss = sum(loss_history) / len(loss_history)
+        writer.add_scalar("Loss/Train", epoch_loss, epoch)
+        total_loss_history.append(epoch_loss)
+        epoch_acc = correct / total
+        writer.add_scalar("Acc/Train", epoch_acc, epoch)
+        total_acc_history.append(epoch_acc)
+        log.info("Epoch {} --> training loss: {} - training acc: {}"
                  .format(epoch + 1,
-                         round(sum(loss_history) / len(loss_history), 4),
-                         round(sum(accuracy_history) / len(accuracy_history), 4)))
+                         round(epoch_loss, 4),
+                         round(epoch_acc, 4)))
 
-        if epoch % validate_every == 0 and epoch != (num_epochs - 1):
+        if epoch % validate_every == 0 and epoch != (num_epochs-1):
             validate_model(model, test_loader, metric, int(epoch / validate_every))
             model = model.train()
-            torch.set_grad_enabled(True)
+            metric = metric.train()
 
     log.info("\nTotal training iteration: %d" % len(total_loss_history))
-    log.info("Average training loss: {} - {} "
-             .format(round(sum(total_loss_history) / len(total_loss_history), 4),
-                     round(sum(total_accuracy_history) / len(total_accuracy_history), 4)))
+    total_loss = sum(total_loss_history) / len(total_loss_history)
+    total_acc = sum(total_acc_history) / len(total_acc_history)
+    log.info("Average --> training loss: {} - training acc: {} "
+             .format(round(total_loss, 6),
+                     round(total_acc, 6)))
 
-    # writer.flush()
 
-
-def train_fine_tuned_model(convolutional, classifier, train_loader, metric, optimizer, num_epochs=25,
-                           update_loss=False):
+def train_fine_tuned_model(convolutional, classifier, train_loader, metric, optimizer, num_epochs=25, update_loss=False):
     learning_rate = 0.0001
     batch_size = train_loader.batch_size
 

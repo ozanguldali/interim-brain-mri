@@ -8,7 +8,7 @@ from util.logger_util import log
 
 def test_model(model, test_loader):
     correct = 0
-    total = len(test_loader)
+    total = len(test_loader.dataset)
 
     # set the model into evaluation mode
     model = model.eval()

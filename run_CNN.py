@@ -17,6 +17,7 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
 
     log.info("Constructing datasets and loaders")
     train_data, train_loader, test_data, test_loader = set_dataset_and_loaders(dataset_folder, augmented, batch_size, img_size, num_workers, normalize)
+
     set_0, set_1 = False, False
     for imgs, labels in test_loader:
         if set_0 and set_1:
@@ -43,6 +44,5 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
 if __name__ == '__main__':
     save = False
     log.info("Process Started")
-    main(model_name='alexnet', optimizer_name="Adam", is_pre_trained=True, fine_tune=False, save=save,
-         dataset_folder="dataset", pretrain_file=None, num_epochs=100, batch_size=32, img_size=112, validation_freq=0.5)
+    main(model_name="alexnet", is_pre_trained=True, save=False, batch_size=64, num_epochs=5, optimizer_name="Adam", img_size=112, validation_freq=0.2)
     log.info("Process Finished")

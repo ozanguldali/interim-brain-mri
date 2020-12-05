@@ -4,17 +4,19 @@ from tqdm.notebook import tqdm
 from cnn import device
 
 from util.logger_util import log
+from util.tensorboard_util import writer
 
 
 def validate_model(model, test_loader, metric, iterator):
     correct = 0
-    total = len(test_loader)
+    total = len(test_loader.dataset)
 
     # set the model into evaluation mode
     model = model.eval()
+    metric = metric.eval()
 
     # behavior of the batch norm layer so that it is not sensitive to batch size
-    with torch.set_grad_enabled(False):
+    with torch.no_grad():
         # Iterate through test set mini batches
         for e, (images, labels) in enumerate(tqdm(test_loader)):
             # Forward pass
@@ -23,14 +25,14 @@ def validate_model(model, test_loader, metric, iterator):
             outputs = model(inputs)
 
             predictions = torch.argmax(outputs, dim=1)
-            correct += torch.sum((predictions == labels).float())
-            accuracy = correct / total
+            truths = torch.sum((predictions == labels).float()).item()
+            correct += truths
 
-            loss = metric(outputs, labels)
+            loss = metric(outputs, labels).item()
 
-    log.info("{}th validation loss and accuracy on epoch: {} - {} "
+    acc = correct / total
+    writer.add_scalar("Loss/Train", loss, acc)
+    log.info("{}th Validation --> Loss: {} - Accuracy: {}"
              .format(iterator,
-                     round(loss.item(), 4),
-                     round(accuracy.item(), 4)))
-
-    return 100 * accuracy
+                     round(loss, 6),
+                     round(acc, 6)))
