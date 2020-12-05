@@ -19,6 +19,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
     total_loss_history = []
     total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
+    last_validate_iter = 0
 
     log.info("Training the model")
     # Iterate through train set mini batches
@@ -71,7 +72,8 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
                          round(epoch_acc, 4)))
 
         if epoch % validate_every == 0 and epoch != (num_epochs-1):
-            validate_model(model, test_loader, metric, int(epoch / validate_every))
+            last_validate_iter = int(epoch / validate_every)
+            validate_model(model, test_loader, metric, last_validate_iter)
             model = model.train()
             metric = metric.train()
 
@@ -81,6 +83,8 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
     log.info("Average --> training loss: {} - training acc: {} "
              .format(round(total_loss, 6),
                      round(total_acc, 6)))
+
+    return last_validate_iter
 
 
 def train_fine_tuned_model(convolutional, classifier, train_loader, metric, optimizer, num_epochs=25, update_loss=False):

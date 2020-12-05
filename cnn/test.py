@@ -4,9 +4,10 @@ from tqdm.notebook import tqdm
 from cnn import device
 
 from util.logger_util import log
+from util.tensorboard_util import writer
 
 
-def test_model(model, test_loader):
+def test_model(model, test_loader, iterator=0):
     correct = 0
     total = len(test_loader.dataset)
 
@@ -23,11 +24,15 @@ def test_model(model, test_loader):
             y = model(inputs)
 
             predictions = torch.argmax(y, dim=1)
-            correct += torch.sum((predictions == labels).float())
+            truths = torch.sum((predictions == labels).float()).item()
+            correct += truths
 
-    log.info('\nTest accuracy: {}'.format(correct / total))
+    acc = (correct / total)
+    log.info('\nTest accuracy: {}'.format(acc))
+    if iterator != 0:
+        writer.add_scalar("Acc/Validation", acc, iterator)
 
-    return 100 * correct / total
+    return 100 * acc
 
     # model.eval()
     # total = len(test_data)

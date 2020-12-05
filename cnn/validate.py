@@ -31,7 +31,8 @@ def validate_model(model, test_loader, metric, iterator):
             loss = metric(outputs, labels).item()
 
     acc = correct / total
-    writer.add_scalar("Loss/Validation", loss, acc)
+    writer.add_scalar("Loss/Validation", loss, iterator)
+    writer.add_scalar("Acc/Validation", acc, iterator)
     log.info("{}th Validation --> Loss: {} - Accuracy: {}"
              .format(iterator,
                      round(loss, 6),
