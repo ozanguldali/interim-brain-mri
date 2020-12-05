@@ -15,7 +15,7 @@ from cnn.validate import validate_model
 
 
 def train_model(model, train_loader, test_loader, metric, optimizer, validation_freq, num_epochs=25, update_loss=False):
-    learning_rate = 0.0001
+    learning_rate = 0.1
     total_loss_history = []
     total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
