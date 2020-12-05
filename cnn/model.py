@@ -76,16 +76,17 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     log.info("Setting the metric")
     metric = nn.CrossEntropyLoss()
 
+    lr = 0.1
     if optimizer_name == optim.Adam.__name__:
-        optimizer = optim.Adam(model.parameters(), lr=0.0001)
+        optimizer = optim.Adam(model.parameters(), lr=lr)
     elif optimizer_name == optim.SGD.__name__:
-        optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=0.0001, betas=(0.9, 0.99), weight_decay=0.025)
+        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=(0.9, 0.99), weight_decay=0.025)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=0.0001, betas=(0.9, 0.99), weight_decay=0.025)
+        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=(0.9, 0.99), weight_decay=0.025)
     elif optimizer_name == padam.Padam.__name__:
-        optimizer = padam.Padam(model.parameters(), lr=0.0001, partial=0.125, weight_decay=0.025, betas=(0.9, 0.99))
+        optimizer = padam.Padam(model.parameters(), lr=lr, partial=0.125, weight_decay=0.025, betas=(0.9, 0.99))
     else:
         log.fatal("not implemented optimizer name: {}".format(optimizer_name))
         sys.exit(1)
