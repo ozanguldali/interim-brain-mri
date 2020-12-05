@@ -74,6 +74,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
         if epoch % validate_every == 0 and epoch != (num_epochs - 1):
             validate_model(model, test_loader, metric, int(epoch / validate_every))
             model = model.train()
+            torch.set_grad_enabled(True)
 
     log.info("\nTotal training iteration: %d" % len(total_loss_history))
     log.info("Average training loss: {} - {} "

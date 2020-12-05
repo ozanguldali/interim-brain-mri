@@ -14,7 +14,7 @@ def validate_model(model, test_loader, metric, iterator):
     model = model.eval()
 
     # behavior of the batch norm layer so that it is not sensitive to batch size
-    with torch.no_grad():
+    with torch.set_grad_enabled(False):
         # Iterate through test set mini batches
         for e, (images, labels) in enumerate(tqdm(test_loader)):
             # Forward pass
