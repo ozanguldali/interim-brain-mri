@@ -18,20 +18,20 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
     log.info("Constructing datasets and loaders")
     train_data, train_loader, test_data, test_loader = set_dataset_and_loaders(dataset_folder, augmented, batch_size, img_size, num_workers, normalize)
 
-    set_0, set_1 = False, False
+    set_0, set_1 = 0, 0
     for imgs, labels in test_loader:
-        if set_0 and set_1:
+        if set_0 == 3 and set_1 == 3:
             break
 
         for e, label in enumerate(labels.tolist()):
-            if label == 0 and not set_0:
-                writer.add_image("{} - class image sample".format(train_data.classes[0]), inv_normalize(imgs[e], normalize))
-                set_0 = True
-            elif label == 1 and not set_1:
-                writer.add_image("{} - class image sample".format(train_data.classes[1]), inv_normalize(imgs[e], normalize))
-                set_1 = True
+            if label == 0 and set_0 != 3:
+                writer.add_image("{} - class image sample {}".format(train_data.classes[0], set_0), inv_normalize(imgs[e], normalize))
+                set_0 += 1
+            elif label == 1 and set_1 != 3:
+                writer.add_image("{} - class image sample {}".format(train_data.classes[1], set_1), inv_normalize(imgs[e], normalize))
+                set_1 += 1
 
-            if set_0 and set_1:
+            if set_0 == 3 and set_1 == 3:
                 break
 
     log.info("Calling the model: " + model_name)
