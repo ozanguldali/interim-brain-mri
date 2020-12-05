@@ -33,7 +33,8 @@ def test_model(model, test_loader, iterator=0):
             truths = torch.sum((predictions == labels).float()).item()
             correct += truths
 
-    log.info("Confusion Matrix:\n{}".format(confusion_matrix(prediction_list, label_list)))
+    log.info("Confusion Matrix:")
+    log.info(confusion_matrix(prediction_list, label_list))
 
     acc = (correct / total)
     log.info('\nTest accuracy: {}'.format(acc))
