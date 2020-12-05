@@ -14,7 +14,7 @@ from util.tensorboard_util import writer
 from cnn.validate import validate_model
 
 
-def train_model(model, train_loader, test_loader, metric, optimizer, validation_freq, num_epochs=25, update_loss=False):
+def train_model(model, train_loader, test_loader, metric, optimizer, lr, validation_freq, num_epochs=25, update_loss=False):
     total_loss_history = []
     total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
@@ -50,9 +50,9 @@ def train_model(model, train_loader, test_loader, metric, optimizer, validation_
                     and e == len(train_loader) - 1 \
                     and (epoch + 1) % int(num_epochs / 4) == 0:
                 update = False
-                learning_rate = float(learning_rate / 10)
-                log.info("learning rate is updated to " + str(learning_rate))
-                optimizer = optim.Adam(optimizer.param_groups, lr=learning_rate)
+                lr = float(lr / 10)
+                log.info("learning rate is updated to " + str(lr))
+                optimizer = optim.Adam(optimizer.param_groups, lr=lr)
 
             # Calculate gradients and step
             loss.backward()
