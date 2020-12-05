@@ -99,7 +99,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
                                update_loss=(model_name == architect.procnn.__name__))
     else:
         # update_loss=(model_name == architect.procnn.__name__)
-        train_model(model, train_loader, test_loader, metric, optimizer, num_epochs=num_epochs, update_loss=False, validation_freq=validation_freq)
+        train_model(model, train_loader, test_loader, metric, optimizer, num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq)
 
     log.info("Testing the model")
     test_acc = test_model(model, test_loader)
