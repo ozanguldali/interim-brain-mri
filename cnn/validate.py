@@ -1,7 +1,7 @@
 import torch
 from tqdm.notebook import tqdm
 
-from cnn import device, ROOT_DIR
+from cnn import device, ROOT_DIR, MODEL_NAME
 from cnn.model import SAVE_FILE
 from cnn.save import save_model
 from cnn.util import is_verified
@@ -35,8 +35,8 @@ def validate_model(model, test_loader, metric, iterator, save):
             loss = metric(outputs, labels).item()
 
     val_acc = correct / total
-    writer.add_scalar("Loss/Validation", loss, iterator)
-    writer.add_scalar("Acc/Validation", val_acc, iterator)
+    writer.add_scalar(MODEL_NAME[0] + "/Loss/Validation", loss, iterator)
+    writer.add_scalar(MODEL_NAME[0] + "/Acc/Validation", val_acc, iterator)
     log.info("{}th Validation --> Loss: {} - Accuracy: {}"
              .format(iterator,
                      round(loss, 6),

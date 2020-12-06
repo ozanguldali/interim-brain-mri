@@ -5,7 +5,7 @@ import torch
 from torch import optim
 from tqdm.notebook import tqdm, trange
 
-from cnn import device
+from cnn import device, MODEL_NAME
 from cnn.util import divide_chunks
 
 from util.logger_util import log
@@ -59,10 +59,10 @@ def train_model(model, train_loader, test_loader, metric, optimizer, lr, validat
 
         log.info("\nIteration number on epoch %d / %d is %d" % (epoch + 1, num_epochs, len(loss_history)))
         epoch_loss = sum(loss_history) / len(loss_history)
-        writer.add_scalar("Loss/Train", epoch_loss, epoch)
+        writer.add_scalar(MODEL_NAME[0] + "/Loss/Train", epoch_loss, epoch)
         total_loss_history.append(epoch_loss)
         epoch_acc = correct / total
-        writer.add_scalar("Acc/Train", epoch_acc, epoch)
+        writer.add_scalar(MODEL_NAME[0] + "Acc/Train", epoch_acc, epoch)
         total_acc_history.append(epoch_acc)
         log.info("Epoch {} --> training loss: {} - training acc: {}"
                  .format(epoch + 1,

@@ -2,7 +2,7 @@ import torch
 from tqdm.notebook import tqdm
 
 from sklearn.metrics import confusion_matrix
-from cnn import device
+from cnn import device, MODEL_NAME
 
 from util.logger_util import log
 from util.tensorboard_util import writer
@@ -36,7 +36,7 @@ def test_model(model, test_loader, iterator=0):
     acc = (correct / total)
     log.info('\nTest accuracy: {}'.format(acc))
     if iterator != 0:
-        writer.add_scalar("Acc/Validation", acc, iterator)
+        writer.add_scalar(MODEL_NAME[0] + "/Acc/Validation", acc, iterator)
 
     conf_matrix = confusion_matrix(label_list, prediction_list)
     log.info("Confusion Matrix:\n_________\n| {} | {} | \n|---|---|\n| {} | {} |\n_________"
