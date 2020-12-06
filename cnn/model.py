@@ -20,10 +20,11 @@ from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr, momentum, partial, betas, weight_decay, num_epochs=25, save=False,
+def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr,
+              momentum, partial, betas, weight_decay, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
-    
+
     num_classes = len(train_loader.dataset.classes)
 
     # instantiate the model
@@ -100,7 +101,8 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
                                update_loss=(model_name == architect.procnn.__name__))
     else:
         # update_loss=(model_name == architect.procnn.__name__)
-        last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr, num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq)
+        last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
+                                        num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq)
 
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)
@@ -123,13 +125,14 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
         verified = True
 
     if save and verified:
-        save_model(model=model, path=("" if not is_pre_trained else "PreTrained_") + model_name + "_" + dataset_folder + "_out.pth", optimizer=optimizer)
+        save_model(model=model,
+                   path=("" if not is_pre_trained else "PreTrained_") + model_name + "_" + dataset_folder + "_out.pth",
+                   optimizer=optimizer)
 
     return model
 
 
 def weighted_model(model_name, is_pre_trained, pretrain_file):
-
     out_file = ROOT_DIR + "/" + pretrain_file + ".pth"
 
     if model_name == architect.procnn.__name__:
@@ -161,4 +164,3 @@ def weighted_model(model_name, is_pre_trained, pretrain_file):
         sys.exit(1)
 
     return load_model(model, out_file)
-
