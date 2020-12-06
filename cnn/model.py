@@ -21,7 +21,7 @@ from util.logger_util import log
 
 
 def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr,
-              momentum, partial, betas, weight_decay, num_epochs=25, save=False,
+              momentum, partial, betas, weight_decay, update_loss=True, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
 
@@ -106,7 +106,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     else:
         # update_loss=(model_name == architect.procnn.__name__)
         last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
-                                        num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq, save=save)
+                                        num_epochs=num_epochs, update_loss=update_loss, validation_freq=validation_freq, save=save)
 
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)

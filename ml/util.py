@@ -21,6 +21,7 @@ def run_svm(seed, X, y, penalty, lambdas=None, kf=None):
         run_svm(seed, X=X, y=y, penalty=False, kf=kf)
         run_svm(seed, X=X, y=y, penalty=True, kf=kf, lambdas=lambdas)
     else:
+        tag = "Acc/SVM" + ("/LASSO" if penalty else "")
         log.info("Penalty Enabled: " + str(penalty))
 
         if penalty:
@@ -39,7 +40,7 @@ def run_svm(seed, X, y, penalty, lambdas=None, kf=None):
         else:
             svc_cv = SVC()
 
-        get_prediction_kf(kf, svc_cv, X, y)
+        get_prediction_kf(kf, svc_cv, X, y, tag)
         log.info("")
 
 
@@ -50,6 +51,7 @@ def run_lr(seed, X, y, penalty, lambdas=None, kf=None):
         run_lr(seed, X=X, y=y, penalty=False, kf=kf)
         run_lr(seed, X=X, y=y, penalty=True, kf=kf, lambdas=lambdas)
     else:
+        tag = "Acc/LR" + ("/LASSO" if penalty else "")
         log.info("Penalty Enabled: " + str(penalty))
 
         if penalty:
@@ -68,7 +70,7 @@ def run_lr(seed, X, y, penalty, lambdas=None, kf=None):
         else:
             clf_cv = LogisticRegression(max_iter=100000, solver='liblinear')
 
-        get_prediction_kf(kf, clf_cv, X, y)
+        get_prediction_kf(kf, clf_cv, X, y, tag)
         log.info("")
 
 
@@ -77,9 +79,10 @@ def run_knn(X, y, kf, penalty=False):
         run_knn(X, y, kf)
         run_knn(X, y, kf)
     else:
+        tag = "Acc/KNN" + ("/LASSO" if penalty else "")
         log.info("Penalty Enabled: " + str(penalty))
 
         neigh_cv = KNeighborsClassifier(n_neighbors=len(set(y)), p=(1 if penalty else 2))
 
-        get_prediction_kf(kf, neigh_cv, X, y)
+        get_prediction_kf(kf, neigh_cv, X, y, tag)
         log.info("")

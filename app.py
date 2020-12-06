@@ -10,7 +10,7 @@ from cnn import model as cnn_model, device
 from cnn.dataset import set_loader
 from cnn.features import extract_features, feature_clean
 from cnn.helper import set_dataset_and_loaders, get_feature_extractor
-from ml.model import run_model
+from ml import model as ml_model
 from util.garbage_util import collect_garbage
 from util.logger_util import log
 
@@ -20,7 +20,7 @@ ROOT_DIR = str(os.path.dirname(os.path.abspath(__file__)))
 def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object = False,
          dataset_folder="dataset", pretrain_file=None, batch_size=8, img_size=227, num_workers=4,
          cnn_model_name="", optimizer_name='Adam', validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
-         betas=(0.9, 0.99), weight_decay=0.025, is_pre_trained=False, fine_tune=False, num_epochs=16, normalize=True,
+         betas=(0.9, 0.99), weight_decay=0.025, update_loss=True, is_pre_trained=False, fine_tune=False, num_epochs=16, normalize=True,
          lambdas=None, seed=1):
     if lambdas is None:
         lambdas = [0.01, 0.05, 0.1, 0.5, 1.0, 5.0]
@@ -30,7 +30,8 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
             run_ML.main(ml_model_name, dataset_folder, seed, lambdas, cv, penalty, img_size, normalize)
         elif method.lower() == "cnn":
             run_CNN.main(False, dataset_folder, pretrain_file, False, batch_size, img_size, num_workers,
-                         cnn_model_name, is_pre_trained, fine_tune, num_epochs, normalize)
+                         cnn_model_name, optimizer_name, is_pre_trained, fine_tune, num_epochs, update_loss, normalize,
+                         validation_freq, lr, momentum, partial, betas, weight_decay)
         else:
             log.fatal("method name is not known: " + method)
             sys.exit(1)
@@ -53,7 +54,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         else:
             log.info("Running CNN model: " + cnn_model_name)
             model = cnn_model.run_model(cnn_model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq,
-                                        lr, momentum, partial, betas, weight_decay, num_epochs, False, dataset_folder, pretrain_file)
+                                        lr, momentum, partial, betas, weight_decay, update_loss, num_epochs, False, dataset_folder, pretrain_file)
 
         log.info("Feature extractor is creating")
         feature_extractor = get_feature_extractor(cnn_model_name, model.eval())
@@ -100,17 +101,17 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
         kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
-        run_model(ml_model_name, X, y, penalty, kf, lambdas, seed)
+        ml_model.run_model(ml_model_name, X, y, penalty, kf, lambdas, seed)
 
     collect_garbage()
 
 
 if __name__ == '__main__':
     log.info("Process Started")
-    # main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="alexnet", is_pre_trained=True,
-    #      dataset_folder="dataset", pretrain_file=None, batch_size=32, num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
-    #      seed=23)
+    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="resnet18", is_pre_trained=True,
+         dataset_folder="dataset", pretrain_file="81.97_PreTrained_resnet18_Adam_dataset_out", batch_size=32, num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
+         seed=23)
 
-    main(transfer_learning=False, method="ml", ml_model_name="all", penalty=None, dataset_folder="dataset",  cv=5,
-         lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
+    # main(transfer_learning=False, method="ml", ml_model_name="all", penalty=None, dataset_folder="dataset",  cv=5,
+    #     lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
     log.info("Process Finished")

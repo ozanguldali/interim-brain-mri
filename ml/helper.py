@@ -8,6 +8,7 @@ from cnn.features import feature_clean
 from ml.dataset import read_dataset, divide_dataset
 
 from util.logger_util import log
+from util.tensorboard_util import writer
 
 
 def get_prediction(model, X_ts, y_ts):
@@ -32,7 +33,7 @@ def get_prediction_cv(seed, model, X, y, cv):
     get_prediction_kf(kf, model, X, y)
 
 
-def get_prediction_kf(kf, model, X, y):
+def get_prediction_kf(kf, model, X, y, tag=None):
     cv = kf.n_splits
     ratios = []
     for e, (train, test) in enumerate(kf.split(X, y)):
@@ -47,6 +48,8 @@ def get_prediction_kf(kf, model, X, y):
         success_ratio = model.score(X_test, y_test)
         log.info(str(cv) + "-Fold CV -- Iteration " + str(e) + " Test Success Ratio: " + str(100*success_ratio) + "%")
         ratios.append(success_ratio)
+        if tag is not None:
+            writer.add_scalar(tag, success_ratio, e)
 
     log.info(str(cv) + "-Fold CV Average Test Success Ratio: " + str(100 * np.average(np.array(ratios))) + "%")
 
@@ -57,16 +60,6 @@ def get_dataset(model_name, dataset_folder, img_size, normalize, divide=False):
 
     if normalize:
         X = StandardScaler().fit_transform(X)
-
-    if model_name == "lda":
-        for i, label in enumerate(y):
-            if label <= 0:
-                updated = 1
-
-            else:
-                updated = 2
-
-            y[i] = updated
 
     if divide:
         log.info("Dividing dataset into train and test data")
