@@ -62,7 +62,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, lr, validat
         writer.add_scalar(MODEL_NAME[0] + "/Loss/Train", epoch_loss, epoch)
         total_loss_history.append(epoch_loss)
         epoch_acc = correct / total
-        writer.add_scalar(MODEL_NAME[0] + "Acc/Train", epoch_acc, epoch)
+        writer.add_scalar(MODEL_NAME[0] + "/Acc/Train", epoch_acc, epoch)
         total_acc_history.append(epoch_acc)
         log.info("Epoch {} --> training loss: {} - training acc: {}"
                  .format(epoch + 1,
