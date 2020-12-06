@@ -4,6 +4,7 @@ from tqdm.notebook import tqdm
 from cnn import device, ROOT_DIR
 from cnn.model import SAVE_FILE
 from cnn.save import save_model
+from cnn.util import is_verified
 from util.file_util import path_exists
 
 from util.logger_util import log
@@ -41,7 +42,7 @@ def validate_model(model, test_loader, metric, iterator, save):
                      round(loss, 6),
                      round(val_acc, 6)))
 
-    if save:
+    if save and is_verified(model, 100 * val_acc):
         exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
 
         better = len(exist_files) == 0

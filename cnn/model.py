@@ -13,7 +13,7 @@ from cnn.save import save_model
 from cnn.summary import get_summary, get_fine_tuned_summary
 from cnn.test import test_model
 from cnn.train import train_model, train_fine_tuned_model
-from cnn.util import prepare_alexnet, prepare_resnet, prepare_vgg, prepare_densenet
+from cnn.util import prepare_alexnet, prepare_resnet, prepare_vgg, prepare_densenet, is_verified
 from util.file_util import path_exists
 
 from util.garbage_util import collect_garbage
@@ -109,24 +109,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)
 
-    verified = False
-
-    if model_name == models.alexnet.__name__ and test_acc >= 1:
-        verified = True
-
-    elif model_name in (models.resnet18.__name__, models.resnet50.__name__, models.resnet152.__name__) and test_acc >= 87:
-        verified = True
-
-    elif model_name == models.vgg16.__name__ and test_acc >= 89:
-        verified = True
-
-    elif model_name == models.vgg19.__name__ and test_acc >= 85:
-        verified = True
-
-    elif model_name == models.densenet169.__name__ and test_acc >= 89:
-        verified = True
-
-    if save and verified:
+    if save and is_verified(model, test_acc):
         exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
 
         better = len(exist_files) == 0

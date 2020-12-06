@@ -196,3 +196,26 @@ def prepare_densenet(is_pre_trained, pretrain_file, fine_tune, num_classes):
             evaluation = model.classifier
 
     return model, frozen, evaluation
+
+
+def is_verified(model, acc):
+    model_name = model.__name__
+
+    verified = False
+
+    if model_name == models.alexnet.__name__ and acc >= 78:
+        verified = True
+
+    elif model_name in (models.resnet18.__name__, models.resnet50.__name__, models.resnet152.__name__) and acc >= 80:
+        verified = True
+
+    elif model_name == models.vgg16.__name__ and acc >= 80:
+        verified = True
+
+    elif model_name == models.vgg19.__name__ and acc >= 80:
+        verified = True
+
+    elif model_name == models.densenet169.__name__ and acc >= 80:
+        verified = True
+
+    return verified
