@@ -11,7 +11,6 @@ from cnn.dataset import set_loader
 from cnn.features import extract_features, feature_clean
 from cnn.helper import set_dataset_and_loaders, get_feature_extractor
 from ml.model import run_model
-from ml.util import run_svm, run_lr, run_knn
 from util.garbage_util import collect_garbage
 from util.logger_util import log
 
