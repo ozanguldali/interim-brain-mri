@@ -6,7 +6,7 @@ import torch.optim as optim
 
 from optim import padam
 
-from cnn import device, ROOT_DIR, SAVE_FILE
+from cnn import device, ROOT_DIR, SAVE_FILE, MODEL_NAME
 import cnn.architect as architect
 from cnn.load import load_model
 from cnn.save import save_model
@@ -24,6 +24,8 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
               momentum, partial, betas, weight_decay, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
+
+    MODEL_NAME[0] = model_name
 
     num_classes = len(train_loader.dataset.classes)
 

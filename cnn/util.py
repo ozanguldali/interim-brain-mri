@@ -3,7 +3,7 @@ import sys
 from torch import nn
 from torchvision import models
 
-from cnn import ROOT_DIR
+from cnn import ROOT_DIR, MODEL_NAME
 from cnn.load import load_model
 
 from util.logger_util import log
@@ -199,7 +199,7 @@ def prepare_densenet(is_pre_trained, pretrain_file, fine_tune, num_classes):
 
 
 def is_verified(model, acc):
-    model_name = model.__name__
+    model_name = MODEL_NAME[0]
 
     verified = False
 
