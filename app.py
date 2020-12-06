@@ -1,18 +1,17 @@
 import os
-import random
 import sys
-from sklearn.preprocessing import StandardScaler, Normalizer
-from sklearn.model_selection import KFold
 
-import run_ML
-from ml.util import run_svm, run_lr, run_knn
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler, Normalizer
 
 import run_CNN
+import run_ML
 from cnn import model as cnn_model, device
-from cnn.dataset import set_age_sex, set_loader
+from cnn.dataset import set_loader
 from cnn.features import extract_features, feature_clean
 from cnn.helper import set_dataset_and_loaders, get_feature_extractor
-
+from ml.model import run_model
+from ml.util import run_svm, run_lr, run_knn
 from util.garbage_util import collect_garbage
 from util.logger_util import log
 
@@ -102,35 +101,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
         kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
-        if ml_model_name == "svm":
-            run_svm(seed, X=X_cnn, y=y, penalty=penalty, kf=kf,
-                    lambdas=(lambdas if (penalty or penalty is None) else None))
-
-        elif ml_model_name == "lr":
-            run_lr(seed, X=X_cnn, y=y, penalty=penalty, kf=kf,
-                   lambdas=(lambdas if (penalty or penalty is None) else None))
-
-        elif ml_model_name == "knn":
-            if penalty is None or penalty:
-                log.info("LASSO Penalty approach is not used on KNN. Thus the run is performing with Penalty: False")
-
-            run_knn(X=X_cnn, y=y, penalty=False, kf=kf)
-
-        elif ml_model_name == "all":
-            log.info("Running CNN model: svm")
-            run_svm(seed, X=X_cnn, y=y, penalty=penalty, kf=kf,
-                    lambdas=(lambdas if (penalty or penalty is None) else None))
-
-            log.info("Running CNN model: lr")
-            run_lr(seed, X=X_cnn, y=y, penalty=penalty, kf=kf,
-                   lambdas=(lambdas if (penalty or penalty is None) else None))
-
-            log.info("Running CNN model: knn")
-            run_knn(X=X_cnn, y=y, penalty=False, kf=kf)
-
-        else:
-            log.fatal("model name is not known: " + ml_model_name)
-            sys.exit(1)
+        run_model(ml_model_name, X, y, penalty, kf, lambdas, seed)
 
     collect_garbage()
 

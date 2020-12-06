@@ -1,10 +1,6 @@
-import csv
-
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from torchvision import datasets, transforms
-
-from cnn import ROOT_DIR
 
 
 def set_dataset(folder, size=224, augmented=False, normalize=None):
@@ -39,29 +35,6 @@ def set_dataset(folder, size=224, augmented=False, normalize=None):
             del dataset_augmented
 
     return dataset
-
-
-def set_age_sex(dataset):
-    root_dir = ROOT_DIR.split("cnn")[0]
-    metadata_path = root_dir + "metadata.csv"
-
-    image_paths = []
-    image_paths.extend([img_tuple[0].split("/")[-1] for img_tuple in dataset.datasets[0].imgs])
-    image_paths.extend([img_tuple[0].split("/")[-1] for img_tuple in dataset.datasets[1].imgs])
-
-    age_list = [0] * len(image_paths)
-    sex_list = [0] * len(image_paths)
-
-    with open(metadata_path, mode='r') as csv_data:
-        reader = csv.DictReader(csv_data, delimiter=',')
-
-        for row in reader:
-            if row["sex"] != "" and row["age"] != "" and row["filename"] in image_paths:
-                index = image_paths.index(row["filename"])
-                age_list[index] = int(row["age"])
-                sex_list[index] = 1 if row["sex"] == "F" else 0
-
-    return age_list, sex_list
 
 
 def set_loader(dataset, batch_size=1, shuffle=False, num_workers=1):
