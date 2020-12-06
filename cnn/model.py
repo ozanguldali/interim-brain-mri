@@ -111,7 +111,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)
 
-    if save and is_verified(model, test_acc):
+    if save and is_verified(test_acc):
         exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
 
         better = len(exist_files) == 0

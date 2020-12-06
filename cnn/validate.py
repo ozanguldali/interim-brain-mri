@@ -42,7 +42,7 @@ def validate_model(model, test_loader, metric, iterator, save):
                      round(loss, 6),
                      round(val_acc, 6)))
 
-    if save and is_verified(model, 100 * val_acc):
+    if save and is_verified(100 * val_acc):
         exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
 
         better = len(exist_files) == 0
@@ -53,5 +53,4 @@ def validate_model(model, test_loader, metric, iterator, save):
             better = all(100 * val_acc > acc for acc in exist_acc)
 
         if better:
-            save_model(model=model,
-                       path=str(round(100 * val_acc, 2)) + "_" + SAVE_FILE[0])
+            save_model(model=model, path=str(round(100 * val_acc, 2)) + "_" + SAVE_FILE[0])

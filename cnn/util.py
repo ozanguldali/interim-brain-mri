@@ -198,7 +198,7 @@ def prepare_densenet(is_pre_trained, pretrain_file, fine_tune, num_classes):
     return model, frozen, evaluation
 
 
-def is_verified(model, acc):
+def is_verified(acc):
     model_name = MODEL_NAME[0]
 
     verified = False
