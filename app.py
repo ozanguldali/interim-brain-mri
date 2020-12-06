@@ -29,7 +29,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
     if not transfer_learning:
         if method.lower() == "ml":
-            run_ML.main(ml_model_name, dataset_folder, cv, penalty, img_size, normalize, num_workers)
+            run_ML.main(ml_model_name, dataset_folder, seed, lambdas, cv, penalty, img_size, normalize)
         elif method.lower() == "cnn":
             run_CNN.main(False, dataset_folder, pretrain_file, False, batch_size, img_size, num_workers,
                          cnn_model_name, is_pre_trained, fine_tune, num_epochs, normalize)
@@ -137,7 +137,10 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="alexnet", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file=None, batch_size=32, num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
-         seed=23)
+    # main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="alexnet", is_pre_trained=True,
+    #      dataset_folder="dataset", pretrain_file=None, batch_size=32, num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
+    #      seed=23)
+
+    main(transfer_learning=False, method="ml", ml_model_name="all", penalty=None, dataset_folder="dataset",  cv=5,
+         lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
     log.info("Process Finished")

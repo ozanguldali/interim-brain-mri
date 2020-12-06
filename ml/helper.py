@@ -51,7 +51,7 @@ def get_prediction_kf(kf, model, X, y):
     log.info(str(cv) + "-Fold CV Average Test Success Ratio: " + str(100 * np.average(np.array(ratios))) + "%")
 
 
-def get_dataset(model_name, dataset_folder, img_size, normalize):
+def get_dataset(model_name, dataset_folder, img_size, normalize, divide=False):
     log.info("Reading dataset")
     X, y = read_dataset(dataset_folder=dataset_folder, resize_value=(img_size, img_size), to_crop=True)
 
@@ -68,12 +68,15 @@ def get_dataset(model_name, dataset_folder, img_size, normalize):
 
             y[i] = updated
 
-    log.info("Dividing dataset into train and test data")
-    X_tr, y_tr, X_ts, y_ts = divide_dataset(X, y)
-    log.info("Train data length: %d" % len(y_tr))
-    log.info("Train data length: %d" % len(y_ts))
+    if divide:
+        log.info("Dividing dataset into train and test data")
+        X_tr, y_tr, X_ts, y_ts = divide_dataset(X, y)
+        log.info("Train data length: %d" % len(y_tr))
+        log.info("Test data length: %d" % len(y_ts))
 
-    return X_tr, y_tr, X_ts, y_ts
+        return X_tr, y_tr, X_ts, y_ts
+
+    return X, y
 
 
 def get_best_lambda(classifier, grad_dict, cv, X, y):

@@ -1,3 +1,6 @@
+from sklearn.model_selection import KFold
+
+from cnn.features import feature_clean
 from ml.helper import get_dataset
 from ml.model import run_model
 
@@ -5,13 +8,18 @@ from util.garbage_util import collect_garbage
 from util.logger_util import log
 
 
-def main(model_name, dataset_folder, cv=5, penalty=False, img_size=227, normalize=True, num_workers=4):
+def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_size=227, normalize=True):
+
+    kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
     log.info("Constructing datasets and arrays")
-    X_tr, y_tr, X_ts, y_ts = get_dataset(model_name, dataset_folder, img_size, normalize)
+    X, y = get_dataset(model_name, dataset_folder, img_size, normalize, divide=False)
+
+    class_dict = {i: (y.count(i) if isinstance(y, list) else y.tolist().count(i)) for i in y}
+    X = feature_clean(X, y, class_dict[0], class_dict[1], 0)
 
     log.info("Calling the model: " + model_name)
-    run_model(model_name, X_tr, y_tr, X_ts, y_ts, cv, penalty, num_workers)
+    run_model(model_name, X, y, penalty, kf, lambdas, seed)
 
     collect_garbage()
 
