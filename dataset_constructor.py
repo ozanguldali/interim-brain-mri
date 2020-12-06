@@ -1,8 +1,10 @@
-import csv, os
+import csv
 from random import randrange, shuffle
-from shutil import copyfile, rmtree
+from shutil import copyfile
 from math import ceil
 import numpy as np
+
+from util.file_util import prepare_directory
 
 ROOT_DIR = "/Users/ozanguldali/Documents/thesis/modelsWithLASSO/"
 SOURCE_DIR = "/Users/ozanguldali/Documents/thesis/covid-chestxray-dataset/images/"
@@ -326,30 +328,6 @@ def remove_refuse_info_list_from_list(refuse, key, target):
     temp_list.clear()
 
     return target
-
-
-def prepare_directory(folder):
-    if os.path.exists(folder):
-        if len(os.listdir(folder)) != 0:
-            clear_directory(folder)
-    else:
-        create_directory(folder)
-
-
-def create_directory(folder):
-    os.makedirs(folder)
-
-
-def clear_directory(folder):
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 def construct_related_base_directory(dataset, folder, sub_folder):

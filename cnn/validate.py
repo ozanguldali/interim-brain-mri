@@ -1,13 +1,16 @@
 import torch
 from tqdm.notebook import tqdm
 
-from cnn import device
+from cnn import device, ROOT_DIR
+from cnn.model import SAVE_FILE
+from cnn.save import save_model
+from util.file_util import path_exists
 
 from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def validate_model(model, test_loader, metric, iterator):
+def validate_model(model, test_loader, metric, iterator, save):
     correct = 0
     total = len(test_loader.dataset)
 
@@ -30,10 +33,24 @@ def validate_model(model, test_loader, metric, iterator):
 
             loss = metric(outputs, labels).item()
 
-    acc = correct / total
+    val_acc = correct / total
     writer.add_scalar("Loss/Validation", loss, iterator)
-    writer.add_scalar("Acc/Validation", acc, iterator)
+    writer.add_scalar("Acc/Validation", val_acc, iterator)
     log.info("{}th Validation --> Loss: {} - Accuracy: {}"
              .format(iterator,
                      round(loss, 6),
-                     round(acc, 6)))
+                     round(val_acc, 6)))
+
+    if save:
+        exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
+
+        better = len(exist_files) == 0
+        if not better:
+            exist_acc = []
+            for file in exist_files:
+                exist_acc.append(float(file.split("_")[0].replace(",", ".")))
+            better = all(100 * val_acc > acc for acc in exist_acc)
+
+        if better:
+            save_model(model=model,
+                       path=str(round(100 * val_acc, 2)) + "_" + SAVE_FILE[0])

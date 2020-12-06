@@ -52,6 +52,6 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
 if __name__ == '__main__':
     save = False
     log.info("Process Started")
-    main(model_name="alexnet", is_pre_trained=True, save=False, batch_size=64, num_epochs=1, optimizer_name="Adam",
+    main(model_name="alexnet", is_pre_trained=True, save=True, batch_size=64, num_epochs=5, optimizer_name="Adam",
          img_size=112, validation_freq=0.2)
     log.info("Process Finished")

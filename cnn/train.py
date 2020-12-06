@@ -14,7 +14,7 @@ from util.tensorboard_util import writer
 from cnn.validate import validate_model
 
 
-def train_model(model, train_loader, test_loader, metric, optimizer, lr, validation_freq, num_epochs=25, update_loss=False):
+def train_model(model, train_loader, test_loader, metric, optimizer, lr, validation_freq, save, num_epochs=25, update_loss=False):
     total_loss_history = []
     total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
@@ -71,7 +71,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, lr, validat
 
         if epoch % validate_every == 0 and epoch != (num_epochs-1):
             last_validate_iter = int(epoch / validate_every)
-            validate_model(model, test_loader, metric, last_validate_iter)
+            validate_model(model, test_loader, metric, last_validate_iter, save)
             model = model.train()
             metric = metric.train()
 

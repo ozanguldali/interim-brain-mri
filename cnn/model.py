@@ -6,7 +6,7 @@ import torch.optim as optim
 
 from optim import padam
 
-from cnn import device, ROOT_DIR
+from cnn import device, ROOT_DIR, SAVE_FILE
 import cnn.architect as architect
 from cnn.load import load_model
 from cnn.save import save_model
@@ -14,10 +14,10 @@ from cnn.summary import get_summary, get_fine_tuned_summary
 from cnn.test import test_model
 from cnn.train import train_model, train_fine_tuned_model
 from cnn.util import prepare_alexnet, prepare_resnet, prepare_vgg, prepare_densenet
+from util.file_util import path_exists
 
 from util.garbage_util import collect_garbage
 from util.logger_util import log
-from util.tensorboard_util import writer
 
 
 def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr,
@@ -93,6 +93,8 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
 
     log.info("Setting the optimizer as: {}".format(optimizer_name))
 
+    SAVE_FILE[0] = ("" if not is_pre_trained else "PreTrained_") + model_name + "_" + optimizer_name + "_" + dataset_folder + "_out.pth"
+
     last_val_iterator = 0
     if is_pre_trained and fine_tune:
         # frozen = frozen.cpu()
@@ -102,17 +104,17 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     else:
         # update_loss=(model_name == architect.procnn.__name__)
         last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
-                                        num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq)
+                                        num_epochs=num_epochs, update_loss=True, validation_freq=validation_freq, save=save)
 
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)
 
     verified = False
 
-    if model_name == models.alexnet.__name__ and test_acc >= 91:
+    if model_name == models.alexnet.__name__ and test_acc >= 1:
         verified = True
 
-    elif model_name == models.resnet50.__name__ and test_acc >= 87:
+    elif model_name in (models.resnet18.__name__, models.resnet50.__name__, models.resnet152.__name__) and test_acc >= 87:
         verified = True
 
     elif model_name == models.vgg16.__name__ and test_acc >= 89:
@@ -125,9 +127,18 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
         verified = True
 
     if save and verified:
-        save_model(model=model,
-                   path=("" if not is_pre_trained else "PreTrained_") + model_name + "_" + dataset_folder + "_out.pth",
-                   optimizer=optimizer)
+        exist_files = path_exists(ROOT_DIR, SAVE_FILE[0], "contains")
+
+        better = len(exist_files) == 0
+        if not better:
+            exist_acc = []
+            for file in exist_files:
+                exist_acc.append(float(file.split("_")[0].replace(",", ".")))
+            better = all(test_acc > acc for acc in exist_acc)
+        if better:
+            save_model(model=model,
+                       path=str(round(test_acc, 2)) + "_" + SAVE_FILE[0],
+                       optimizer=optimizer)
 
     return model
 
