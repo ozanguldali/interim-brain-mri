@@ -7,15 +7,12 @@ from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=False, batch_size=20, img_size=227,
+def main(save=False, dataset_folder="dataset", augmented=False, batch_size=20, img_size=227,
          num_workers=4, model_name='alexnet', optimizer_name='Adam', is_pre_trained=False, fine_tune=False,
-         num_epochs=18, update_lr=True, normalize=None, validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125, betas=(0.9, 0.99),
-         weight_decay=0.025):
+         num_epochs=18, update_lr=True, normalize=None, validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
+         betas=(0.9, 0.99), weight_decay=0.025):
     if not is_pre_trained and fine_tune:
         fine_tune = False
-
-    if not is_pre_trained and pretrain_file is not None:
-        pretrain_file = None
 
     log.info("Constructing datasets and loaders")
     train_data, train_loader, test_data, test_loader = set_dataset_and_loaders(dataset_folder, augmented, batch_size,
@@ -42,9 +39,8 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
     log.info("Calling the model: " + model_name)
     run_model(model_name=model_name, optimizer_name=optimizer_name, is_pre_trained=is_pre_trained, fine_tune=fine_tune,
               train_loader=train_loader, test_loader=test_loader, num_epochs=num_epochs, save=save,
-              update_lr=update_lr, dataset_folder=dataset_folder, pretrain_file=pretrain_file,
-              validation_freq=validation_freq, lr=lr, momentum=momentum, partial=partial, betas=betas,
-              weight_decay=weight_decay)
+              update_lr=update_lr, dataset_folder=dataset_folder, validation_freq=validation_freq, lr=lr,
+              momentum=momentum, partial=partial, betas=betas, weight_decay=weight_decay)
 
     collect_garbage()
     writer.close()

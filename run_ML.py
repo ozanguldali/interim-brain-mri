@@ -1,6 +1,5 @@
 from sklearn.model_selection import KFold
 
-from cnn.features import feature_clean
 from ml.helper import get_dataset
 from ml.model import run_model
 
@@ -14,9 +13,6 @@ def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_siz
 
     log.info("Constructing datasets and arrays")
     X, y = get_dataset(model_name, dataset_folder, img_size, normalize, divide=False)
-
-    class_dict = {i: (y.count(i) if isinstance(y, list) else y.tolist().count(i)) for i in y}
-    X = feature_clean(X, y, class_dict[0], class_dict[1], 0)
 
     log.info("Calling the model: " + model_name)
     run_model(model_name, X, y, penalty, kf, lambdas, seed)

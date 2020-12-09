@@ -30,7 +30,7 @@ def prepare_alexnet(is_pre_trained, fine_tune, num_classes):
     return model
 
 
-def prepare_resnet(model_name, is_pre_trained, pretrain_file, fine_tune, num_classes):
+def prepare_resnet(model_name, is_pre_trained, fine_tune, num_classes):
 
     if model_name == models.resnet18.__name__:
         model = models.resnet18(pretrained=is_pre_trained,

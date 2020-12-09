@@ -4,7 +4,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import KFold, GridSearchCV
 
-from cnn.features import feature_clean
 from ml.dataset import read_dataset, divide_dataset
 
 from util.logger_util import log
@@ -41,8 +40,6 @@ def get_prediction_kf(kf, model, X, y, tag=None):
             X = np.array(X)
 
         X_train, X_test, y_train, y_test = X[train], X[test], np.array(y)[train], np.array(y)[test]
-        class_dict = {i: y_train.tolist().count(i) for i in y_train}
-        X_train = feature_clean(X_train, y_train, class_dict[0], class_dict[1], 0)
 
         model.fit(X_train, y_train)
         success_ratio = model.score(X_test, y_test)
