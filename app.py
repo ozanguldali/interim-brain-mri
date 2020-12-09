@@ -21,8 +21,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
          dataset_folder="dataset", pretrain_file=None, batch_size=8, img_size=227, num_workers=4,
          cnn_model_name="", optimizer_name='Adam', validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
          betas=(0.9, 0.99), weight_decay=0.025, update_lr=True, is_pre_trained=False, fine_tune=False, num_epochs=16,
-         normalize=True,
-         lambdas=None, seed=1):
+         normalize=True, lambdas=None, seed=1):
     if lambdas is None:
         lambdas = [0.01, 0.05, 0.1, 0.5, 1.0, 5.0]
 
@@ -96,10 +95,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 if __name__ == '__main__':
     log.info("Process Started")
     main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="resnet18", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file="82.31_PreTrained_resnet18_Adam_dataset_out", batch_size=32,
-         num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
-         seed=23)
+         dataset_folder="dataset", pretrain_file="82.31_PreTrained_resnet18_Adam_dataset_out", img_size=112,
+         num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
 
-    # main(transfer_learning=False, method="ml", ml_model_name="all", penalty=None, dataset_folder="dataset",  cv=5,
-    #     lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
     log.info("Process Finished")
