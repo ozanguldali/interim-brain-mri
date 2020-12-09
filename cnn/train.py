@@ -14,7 +14,7 @@ from util.tensorboard_util import writer
 from cnn.validate import validate_model
 
 
-def train_model(model, train_loader, test_loader, metric, optimizer, lr, validation_freq, save, num_epochs=25, update_loss=False):
+def train_model(model, train_loader, test_loader, metric, optimizer, lr, validation_freq, save, num_epochs=25, update_lr=False):
     total_loss_history = []
     total_acc_history = []
     validate_every = max(1, math.floor(num_epochs * validation_freq))
@@ -25,7 +25,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, lr, validat
     for epoch in trange(num_epochs):
         correct = 0
         total = len(train_loader.dataset)
-        update = update_loss
+        update = update_lr
         loss_history = []
         for e, (images, labels) in enumerate(train_loader):  # tqdm
             # zero the parameter gradients
@@ -85,7 +85,7 @@ def train_model(model, train_loader, test_loader, metric, optimizer, lr, validat
     return last_validate_iter
 
 
-def train_fine_tuned_model(convolutional, classifier, train_loader, metric, optimizer, num_epochs=25, update_loss=False):
+def train_fine_tuned_model(convolutional, classifier, train_loader, metric, optimizer, num_epochs=25, update_lr=False):
     learning_rate = 0.0001
     batch_size = train_loader.batch_size
 
@@ -108,7 +108,7 @@ def train_fine_tuned_model(convolutional, classifier, train_loader, metric, opti
     # Iterate through train set mini batches
     for epoch in trange(num_epochs):
         random.shuffle(train_matrix)
-        update = update_loss
+        update = update_lr
         loss_history = []
 
         chunked_generator = divide_chunks(train_matrix, batch_size)

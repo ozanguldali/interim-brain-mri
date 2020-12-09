@@ -4,6 +4,7 @@ import torch.nn as nn
 import torchvision.models as models
 import torch.optim as optim
 
+from cnn.helper import get_grad_update_params
 from optim import padam
 
 from cnn import device, ROOT_DIR, SAVE_FILE, MODEL_NAME
@@ -21,7 +22,7 @@ from util.logger_util import log
 
 
 def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr,
-              momentum, partial, betas, weight_decay, update_loss=True, num_epochs=25, save=False,
+              momentum, partial, betas, weight_decay, update_lr=True, num_epochs=25, save=False,
               dataset_folder="dataset", pretrain_file=None):
     collect_garbage()
 
@@ -59,36 +60,41 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
         sys.exit(1)
 
     log.info("Setting the model to device")
-    if is_pre_trained and fine_tune:
-        frozen = frozen.to(device)
-        evaluation = evaluation.to(device)
-        model = nn.Sequential(frozen, evaluation)
-    else:
-        model = model.to(device)
+    # if is_pre_trained and fine_tune:
+    #     frozen = frozen.to(device)
+    #     evaluation = evaluation.to(device)
+    #     model = nn.Sequential(frozen, evaluation)
+    # else:
+    #     model = model.to(device)
+
+    model = model.to(device)
 
     if "densenet" not in model_name:
         log.info("The summary:")
-        # model = reduce_features(model)
-        if is_pre_trained and fine_tune:
-            get_fine_tuned_summary(frozen, evaluation, train_loader)
-        else:
-            get_summary(model, train_loader)
+        # # model = reduce_features(model)
+        # if is_pre_trained and fine_tune:
+        #     get_fine_tuned_summary(frozen, evaluation, train_loader)
+        # else:
+        #     get_summary(model, train_loader)
+        get_summary(model, train_loader)
 
     collect_garbage()
 
     log.info("Setting the metric")
     metric = nn.CrossEntropyLoss()
 
+    model_parameters = get_grad_update_params(model, fine_tune)
+
     if optimizer_name == optim.Adam.__name__:
-        optimizer = optim.Adam(model.parameters(), lr=lr)
+        optimizer = optim.Adam(model_parameters, lr=lr)
     elif optimizer_name == optim.SGD.__name__:
-        optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+        optimizer = optim.SGD(model_parameters, lr=lr, momentum=momentum)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=betas, weight_decay=weight_decay)
+        optimizer = optim.AdamW(model_parameters, lr=lr, betas=betas, weight_decay=weight_decay)
     elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model.parameters(), lr=lr, betas=betas, weight_decay=weight_decay)
+        optimizer = optim.AdamW(model_parameters, lr=lr, betas=betas, weight_decay=weight_decay)
     elif optimizer_name == padam.Padam.__name__:
-        optimizer = padam.Padam(model.parameters(), lr=lr, partial=partial, weight_decay=weight_decay, betas=betas)
+        optimizer = padam.Padam(model_parameters, lr=lr, partial=partial, weight_decay=weight_decay, betas=betas)
     else:
         log.fatal("not implemented optimizer name: {}".format(optimizer_name))
         sys.exit(1)
@@ -97,16 +103,19 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
 
     SAVE_FILE[0] = ("" if not is_pre_trained else "PreTrained_") + model_name + "_" + optimizer_name + "_" + dataset_folder + "_out.pth"
 
-    last_val_iterator = 0
-    if is_pre_trained and fine_tune:
-        # frozen = frozen.cpu()
-        frozen = frozen.eval()
-        train_fine_tuned_model(frozen, evaluation, train_loader, metric, optimizer, num_epochs=num_epochs,
-                               update_loss=(model_name == architect.procnn.__name__))
-    else:
-        # update_loss=(model_name == architect.procnn.__name__)
-        last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
-                                        num_epochs=num_epochs, update_loss=update_loss, validation_freq=validation_freq, save=save)
+    # last_val_iterator = 0
+    # if is_pre_trained and fine_tune:
+    #     # frozen = frozen.cpu()
+    #     frozen = frozen.eval()
+    #     train_fine_tuned_model(frozen, evaluation, train_loader, metric, optimizer, num_epochs=num_epochs,
+    #                            update_lr=(model_name == architect.procnn.__name__))
+    # else:
+    #     # update_lr=(model_name == architect.procnn.__name__)
+    #     last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
+    #                                     num_epochs=num_epochs, update_lr=update_lr, validation_freq=validation_freq, save=save)
+    last_val_iterator = train_model(model, train_loader, test_loader, metric, optimizer, lr=lr,
+                                    num_epochs=num_epochs, update_lr=update_lr, validation_freq=validation_freq,
+                                    save=save)
 
     log.info("Testing the model")
     test_acc = test_model(model, test_loader, last_val_iterator)
@@ -121,9 +130,7 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
                 exist_acc.append(float(file.split("_")[0].replace(",", ".")))
             better = all(test_acc > acc for acc in exist_acc)
         if better:
-            save_model(model=model,
-                       path=str(round(test_acc, 2)) + "_" + SAVE_FILE[0],
-                       optimizer=optimizer)
+            save_model(model=model, path=str(round(test_acc, 2)) + "_" + SAVE_FILE[0])
 
     return model
 

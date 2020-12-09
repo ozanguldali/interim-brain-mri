@@ -9,7 +9,7 @@ from util.tensorboard_util import writer
 
 def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=False, batch_size=20, img_size=227,
          num_workers=4, model_name='alexnet', optimizer_name='Adam', is_pre_trained=False, fine_tune=False,
-         num_epochs=18, update_loss=True, normalize=None, validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125, betas=(0.9, 0.99),
+         num_epochs=18, update_lr=True, normalize=None, validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125, betas=(0.9, 0.99),
          weight_decay=0.025):
     if not is_pre_trained and fine_tune:
         fine_tune = False
@@ -42,7 +42,7 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
     log.info("Calling the model: " + model_name)
     run_model(model_name=model_name, optimizer_name=optimizer_name, is_pre_trained=is_pre_trained, fine_tune=fine_tune,
               train_loader=train_loader, test_loader=test_loader, num_epochs=num_epochs, save=save,
-              update_loss=update_loss, dataset_folder=dataset_folder, pretrain_file=pretrain_file,
+              update_lr=update_lr, dataset_folder=dataset_folder, pretrain_file=pretrain_file,
               validation_freq=validation_freq, lr=lr, momentum=momentum, partial=partial, betas=betas,
               weight_decay=weight_decay)
 
@@ -53,6 +53,6 @@ def main(save=False, dataset_folder="dataset", pretrain_file=None, augmented=Fal
 if __name__ == '__main__':
     save = False
     log.info("Process Started")
-    main(model_name="alexnet", is_pre_trained=True, save=True, batch_size=64, num_epochs=5, optimizer_name="Adam",
-         img_size=112, validation_freq=0.2)
+    main(model_name="densenet169", is_pre_trained=True, fine_tune=True, save=False, batch_size=32, num_epochs=5, optimizer_name="Adam",
+         img_size=112, validation_freq=1.0/5.0, lr=0.001, update_lr=False)
     log.info("Process Finished")

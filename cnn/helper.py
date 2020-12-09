@@ -48,3 +48,25 @@ def get_feature_extractor(model_name, model):
         sys.exit(1)
 
     return feature_extractor
+
+
+def set_parameter_requires_grad(model):
+    for param in model.parameters():
+        param.requires_grad = False
+
+
+def get_grad_update_params(model, feature_extract):
+    params_to_update = model.parameters()
+    print("Params to learn:")
+    if feature_extract:
+        params_to_update = []
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                params_to_update.append(param)
+                print("\t", name)
+    else:
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                print("\t", name)
+
+    return params_to_update
