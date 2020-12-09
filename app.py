@@ -18,7 +18,7 @@ ROOT_DIR = str(os.path.dirname(os.path.abspath(__file__)))
 
 
 def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object = False,
-         dataset_folder="dataset", pretrain_file=None, batch_size=8, img_size=227, num_workers=4,
+         dataset_folder="dataset", pretrain_file=None, batch_size=8, img_size=112, num_workers=4,
          cnn_model_name="", optimizer_name='Adam', validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
          betas=(0.9, 0.99), weight_decay=0.025, update_lr=True, is_pre_trained=False, fine_tune=False, num_epochs=16,
          normalize=True, lambdas=None, seed=1):
