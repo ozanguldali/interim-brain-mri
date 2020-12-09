@@ -24,6 +24,8 @@ def alexnet_feature_extractor(model):
         model.features,
         model.avgpool,
         nn.Flatten(),
+        *[model.classifier[i] for i in range(3)]
+        # model.classifier
     )
 
     return feature_extractor
@@ -41,6 +43,7 @@ def resnet_feature_extractor(model):
         model.layer4,
         model.avgpool,
         nn.Flatten(),
+        model.fc
     )
 
     return feature_extractor
@@ -51,7 +54,7 @@ def vgg_feature_extractor(model):
         model.features,
         model.avgpool,
         nn.Flatten(),
-        *[model.classifier[i] for i in range(3)]
+        model.classifier
     )
 
     return feature_extractor
@@ -62,7 +65,8 @@ def densenet_feature_extractor(model):
         model.features,
         nn.ReLU(inplace=True),
         nn.AdaptiveMaxPool2d(1),
-        nn.Flatten()
+        nn.Flatten(),
+        model.classifier
     )
 
     return feature_extractor

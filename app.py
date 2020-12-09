@@ -94,8 +94,8 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="resnet18", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file="82.31_PreTrained_resnet18_Adam_dataset_out", img_size=112,
+    main(transfer_learning=True, ml_model_name="svm", penalty=False, cnn_model_name="densenet", is_pre_trained=True,
+         dataset_folder="dataset", pretrain_file="81.29_PreTrained_vgg19_Adam_dataset_out", img_size=112,
          num_epochs=1, cv=5, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
 
     log.info("Process Finished")
