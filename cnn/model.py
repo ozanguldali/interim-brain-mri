@@ -8,7 +8,6 @@ from cnn.helper import get_grad_update_params
 from optim import padam
 
 from cnn import device, ROOT_DIR, SAVE_FILE, MODEL_NAME
-import cnn.architect as architect
 from cnn.load import load_model
 from cnn.save import save_model
 from cnn.summary import get_summary
@@ -65,10 +64,6 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
         optimizer = optim.Adam(model_parameters, lr=lr)
     elif optimizer_name == optim.SGD.__name__:
         optimizer = optim.SGD(model_parameters, lr=lr, momentum=momentum)
-    elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model_parameters, lr=lr, betas=betas, weight_decay=weight_decay)
-    elif optimizer_name == optim.AdamW.__name__:
-        optimizer = optim.AdamW(model_parameters, lr=lr, betas=betas, weight_decay=weight_decay)
     elif optimizer_name == padam.Padam.__name__:
         optimizer = padam.Padam(model_parameters, lr=lr, partial=partial, weight_decay=weight_decay, betas=betas)
     else:

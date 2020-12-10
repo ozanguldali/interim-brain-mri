@@ -12,7 +12,7 @@ def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_siz
     kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
     log.info("Constructing datasets and arrays")
-    X, y = get_dataset(model_name, dataset_folder, img_size, normalize, divide=False)
+    X, y = get_dataset(dataset_folder, img_size, normalize, divide=False)
 
     log.info("Calling the model: " + model_name)
     run_model(model_name, X, y, penalty, kf, lambdas, seed)
