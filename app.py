@@ -29,7 +29,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         if method.lower() == "ml":
             run_ML.main(ml_model_name, dataset_folder, seed, lambdas, cv, penalty, img_size, normalize)
         elif method.lower() == "cnn":
-            run_CNN.main(save=False, dataset_folder=dataset_folder, augmented=False, batch_size=batch_size,
+            run_CNN.main(save=False, dataset_folder=dataset_folder, batch_size=batch_size,
                          img_size=img_size, num_workers=num_workers, num_epochs=num_epochs, model_name=cnn_model_name,
                          optimizer_name=optimizer_name, is_pre_trained=is_pre_trained, fine_tune=fine_tune,
                          update_lr=update_lr, normalize=normalize, validation_freq=validation_freq, lr=lr,
@@ -41,7 +41,6 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
     else:
         log.info("Constructing datasets and loaders")
         train_data, train_loader, test_data, test_loader = set_dataset_and_loaders(dataset_folder=dataset_folder,
-                                                                                   augmented=False,
                                                                                    batch_size=batch_size,
                                                                                    img_size=img_size,
                                                                                    num_workers=num_workers,

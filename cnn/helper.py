@@ -10,12 +10,12 @@ from cnn.features import alexnet_feature_extractor, resnet_feature_extractor, vg
 from util.logger_util import log
 
 
-def set_dataset_and_loaders(dataset_folder, augmented, batch_size, img_size, num_workers, normalize=None):
+def set_dataset_and_loaders(dataset_folder, batch_size, img_size, num_workers, normalize=None):
 
     dataset_dir = ROOT_DIR.split("cnn")[0]
 
     log.info("Setting train data")
-    train_data = set_dataset(folder=dataset_dir + dataset_folder + '/train', size=img_size, augmented=augmented, normalize=normalize)
+    train_data = set_dataset(folder=dataset_dir + dataset_folder + '/train', size=img_size, normalize=normalize)
     log.info("Train data length: %d" % len(train_data))
     log.info("Setting test data")
     test_data = set_dataset(folder=dataset_dir + dataset_folder + '/test', size=img_size, normalize=normalize)

@@ -28,9 +28,16 @@ def set_transform(resize=224, crop=224, normalize=None, additional=None):
         transform_list.extend(additional)
 
     transform_list.extend([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=normalize[0], std=normalize[1])
+        transforms.ToTensor()
     ])
+
+    if normalize is None or normalize is True:
+        normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
+        transform_list.extend([transforms.Normalize(mean=normalize[0], std=normalize[1])])
+    elif normalize is not False:
+        transform_list.extend([transforms.Normalize(mean=normalize[0], std=normalize[1])])
+    else:
+        pass
 
     return transforms.Compose(transform_list)
 
