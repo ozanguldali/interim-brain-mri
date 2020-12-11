@@ -23,11 +23,10 @@ def show_layer(img, w, h):
         plt.imshow(c_img[0].detach().numpy(), interpolation='nearest')
 
 
-
-def visualize(model_name, dataset_folder="dataset", img_size=224):
+def visualize(model_name, dataset_folder="dataset", img_size=224, normalize=False):
 
     _, _, _, test_loader = set_dataset_and_loaders(dataset_folder, batch_size=1,
-                                                   img_size=img_size, num_workers=4, normalize=False)
+                                                   img_size=img_size, num_workers=4, normalize=normalize)
 
     for image, _ in test_loader:
 
@@ -98,4 +97,4 @@ def visualize(model_name, dataset_folder="dataset", img_size=224):
 
 
 if __name__ == '__main__':
-    visualize("alexnet", "dataset", 224)
+    visualize("vgg16", "dataset", img_size=224, normalize=True)
