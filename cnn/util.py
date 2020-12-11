@@ -3,17 +3,10 @@ import sys
 from torch import nn
 from torchvision import models
 
-from cnn import ROOT_DIR, MODEL_NAME
+from cnn import MODEL_NAME
 from cnn.helper import set_parameter_requires_grad
-from cnn.load import load_model
 
 from util.logger_util import log
-
-
-def divide_chunks(target_list, n):
-    # looping till length target_list
-    for i in range(0, len(target_list), n):
-        yield target_list[i:i + n]
 
 
 def prepare_alexnet(is_pre_trained, fine_tune, num_classes):

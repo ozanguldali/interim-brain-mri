@@ -3,36 +3,9 @@ from torchvision.transforms import transforms
 from torchvision import datasets, transforms
 
 
-def set_dataset(folder, size=224, augmented=False, normalize=None):
-
-    augmenting_list = [
-        transforms.RandomHorizontalFlip()
-        # transforms.RandomVerticalFlip(),
-        # transforms.RandomRotation((90, 90)),
-        # transforms.RandomRotation((180, 180)),
-        # transforms.RandomRotation((270, 270))
-    ]
-
+def set_dataset(folder, size=112, normalize=None):
     transform = set_transform(resize=size, crop=size, normalize=normalize)
     dataset = datasets.ImageFolder(folder, transform=transform)
-
-    if augmented:
-        for augment_type in augmenting_list:
-            transform = set_transform(resize=size, crop=size, additional=[augment_type])
-            dataset_augmented = datasets.ImageFolder(folder, transform=transform)
-
-            # dataset_unique = tuple(
-            #     set(
-            #         dataset_unique
-            #     ).
-            #     union(set(
-            #         dataset_augmented
-            #         )
-            #     )
-            # )
-
-            dataset += dataset_augmented
-            del dataset_augmented
 
     return dataset
 

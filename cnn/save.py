@@ -1,7 +1,7 @@
 import torch
 
 from cnn import ROOT_DIR
-from cnn.architect import ProCNN
+from cnn.architect import InterimNet
 
 
 def save_model(model, path):
@@ -9,4 +9,4 @@ def save_model(model, path):
 
 
 if __name__ == '__main__':
-    save_model(ProCNN(), "/cnn/dataset_out.pth")
+    save_model(InterimNet(), "/cnn/dataset_out.pth")

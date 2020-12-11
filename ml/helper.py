@@ -11,25 +11,7 @@ from util.tensorboard_util import writer
 
 
 def get_prediction(model, X_ts, y_ts):
-    # prediction
-    # test_set_size = len(y_ts)
-    #
-    # false = 0
-    # y_predict = list(model.predict([X_ts][0]))
-    # for i in range(0, test_set_size - 1):
-    #     if y_ts[i] != y_predict[i]:
-    #         false += 1
-    #
-    # success_ratio = ((test_set_size - false) / test_set_size) * 100
-    # log.info("Test Success Ratio: " + str(success_ratio) + '%')
-
     log.info("Test Success Ratio: " + str(100 * model.score(X_ts, y_ts)) + '%')
-
-
-def get_prediction_cv(seed, model, X, y, cv):
-    kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
-
-    get_prediction_kf(kf, model, X, y)
 
 
 def get_prediction_kf(kf, model, X, y, tag=None):
