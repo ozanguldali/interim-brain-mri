@@ -1,4 +1,4 @@
-from cnn.dataset import inv_normalize
+from cnn.dataset import inv_normalize_tensor
 from cnn.helper import set_dataset_and_loaders
 from cnn.model import run_model
 
@@ -26,11 +26,11 @@ def main(save=False, dataset_folder="dataset", batch_size=20, img_size=227,
         for e, label in enumerate(labels.tolist()):
             if label == 0 and set_0 != 3:
                 writer.add_image("{} - class image sample {}".format(train_data.classes[0], set_0),
-                                 inv_normalize(imgs[e], normalize))
+                                 inv_normalize_tensor(imgs[e], normalize))
                 set_0 += 1
             elif label == 1 and set_1 != 3:
                 writer.add_image("{} - class image sample {}".format(train_data.classes[1], set_1),
-                                 inv_normalize(imgs[e], normalize))
+                                 inv_normalize_tensor(imgs[e], normalize))
                 set_1 += 1
 
             if set_0 == 3 and set_1 == 3:

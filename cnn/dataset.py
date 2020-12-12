@@ -42,7 +42,17 @@ def set_transform(resize=224, crop=224, normalize=None, additional=None):
     return transforms.Compose(transform_list)
 
 
-def inv_normalize(tensor, normalize=None):
+def normalize_tensor(tensor, norm_value=None):
+    if norm_value is None:
+        norm_value = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
+        transform = transforms.Normalize(mean=norm_value[0], std=norm_value[1])
+    else:
+        transform = transforms.Normalize(mean=norm_value[0], std=norm_value[1])
+
+    return transform(tensor)
+
+
+def inv_normalize_tensor(tensor, normalize=None):
     if normalize is None or normalize is True:
         normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
 
