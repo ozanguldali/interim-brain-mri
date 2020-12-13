@@ -107,7 +107,7 @@ def is_verified(acc):
     elif model_name == models.vgg19.__name__ and acc >= 81.3:
         verified = True
 
-    elif model_name == models.densenet169.__name__ and acc >= 81.3:
+    elif model_name == models.densenet169.__name__ and acc >= 81.64:
         verified = True
 
     return verified
