@@ -7,7 +7,7 @@ from util.logger_util import log
 from util.tensorboard_util import writer
 
 
-def main(save=False, dataset_folder="dataset", batch_size=20, img_size=227,
+def main(save=False, dataset_folder="dataset", batch_size=20, img_size=112,
          num_workers=4, model_name='alexnet', optimizer_name='Adam', is_pre_trained=False, fine_tune=False,
          num_epochs=18, update_lr=True, normalize=None, validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
          betas=(0.9, 0.99), weight_decay=0.025):

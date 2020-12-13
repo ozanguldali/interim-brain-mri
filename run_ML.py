@@ -7,7 +7,7 @@ from util.garbage_util import collect_garbage
 from util.logger_util import log
 
 
-def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_size=227, normalize=True):
+def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_size=112, normalize=True):
 
     kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
