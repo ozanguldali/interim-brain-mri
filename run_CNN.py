@@ -47,7 +47,6 @@ def main(save=False, dataset_folder="dataset", batch_size=20, img_size=112,
 
 
 if __name__ == '__main__':
-    # DenseNet169 -> 0.7891156462585034
     save = False
     log.info("Process Started")
     main(model_name="densenet169", is_pre_trained=True, fine_tune=True, save=False, batch_size=32, num_epochs=5, optimizer_name="Adam",
