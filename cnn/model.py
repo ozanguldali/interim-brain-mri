@@ -96,32 +96,37 @@ def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loade
     return model
 
 
-def weighted_model(model_name, pretrain_file):
+def weighted_model(model_name, pretrain_file, use_actual_num_classes=False):
     out_file = ROOT_DIR + "/" + pretrain_file + ".pth"
 
     if model_name == models.alexnet.__name__:
-        model = models.alexnet()
+        model = models.alexnet(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.resnet18.__name__:
-        model = models.resnet18()
+        model = models.resnet18(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.resnet50.__name__:
-        model = models.resnet50()
+        model = models.resnet50(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.resnet152.__name__:
-        model = models.resnet152()
+        model = models.resnet152(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.vgg16.__name__:
-        model = models.vgg16()
+        model = models.vgg16(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.vgg19.__name__:
-        model = models.vgg19()
+        model = models.vgg19(num_classes=2 if use_actual_num_classes else 1000)
 
     elif model_name == models.densenet169.__name__:
-        model = models.densenet169()
+        model = models.densenet169(num_classes=2 if use_actual_num_classes else 1000)
 
     else:
         log.fatal("model name is not known: " + model_name)
         sys.exit(1)
 
-    return load_model(model, out_file)
+    try:
+        log.info("Using class size as: {}".format(2 if use_actual_num_classes else 1000))
+        return load_model(model, out_file)
+    except RuntimeError as re:
+        log.error(re)
+        return weighted_model(model_name, pretrain_file, True)
