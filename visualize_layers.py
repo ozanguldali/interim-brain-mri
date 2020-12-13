@@ -132,4 +132,4 @@ def visualize(model_name, dataset_folder="dataset", img_size=224, normalize=Fals
 
 
 if __name__ == '__main__':
-    visualize("resnet18", "dataset", img_size=224, normalize=False)
+    visualize("resnet18", "dataset", img_size=112, normalize=True)
