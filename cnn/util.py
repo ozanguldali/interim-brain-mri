@@ -44,7 +44,7 @@ def prepare_resnet(model_name, is_pre_trained, fine_tune, num_classes):
         )
         set_parameter_requires_grad(frozen)
 
-    # model.fc = nn.Linear(model.fc.in_features, num_classes)
+    model.fc = nn.Linear(model.fc.in_features, num_classes)
 
     return model
 
