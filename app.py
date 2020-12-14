@@ -78,12 +78,9 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         log.info("Total class 0 size: " + str(class0_size))
         log.info("Total class 1 size: " + str(class1_size))
 
-        print(X_cnn[0])
         if normalize:
             X_cnn = Normalizer().fit_transform(X_cnn)
         X_cnn = StandardScaler().fit_transform(X_cnn)
-
-        print(X_cnn[0])
 
         log.info("Number of features in X_cnn: " + str(len(X_cnn[0])))
 
@@ -96,8 +93,8 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="densenet169", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file="81.97_PreTrained_densenet169_Adam_dataset_out", img_size=112,
-         cv=10, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
+    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="resnet18", is_pre_trained=True,
+         dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", img_size=112,
+         cv=10, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=17)
 
     log.info("Process Finished")
