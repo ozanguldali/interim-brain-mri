@@ -29,7 +29,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         if method.lower() == "ml":
             run_ML.main(ml_model_name, dataset_folder, seed, lambdas, cv, penalty, img_size, normalize)
         elif method.lower() == "cnn":
-            run_CNN.main(save=False, dataset_folder=dataset_folder, batch_size=batch_size,
+            run_CNN.main(save=False, dataset_folder=dataset_folder, batch_size=batch_size, test_without_train=False,
                          img_size=img_size, num_workers=num_workers, num_epochs=num_epochs, model_name=cnn_model_name,
                          optimizer_name=optimizer_name, is_pre_trained=is_pre_trained, fine_tune=fine_tune,
                          update_lr=update_lr, normalize=normalize, validation_freq=validation_freq, lr=lr,
@@ -54,12 +54,12 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         else:
             log.info("Running CNN model: " + cnn_model_name)
             model = cnn_model.run_model(model_name=cnn_model_name, optimizer_name=optimizer_name, fine_tune=fine_tune,
-                                        is_pre_trained=is_pre_trained, train_loader=train_loader, num_epochs=num_epochs,
+                                        is_pre_trained=is_pre_trained, test_without_train=False, train_loader=train_loader, num_epochs=num_epochs,
                                         test_loader=test_loader, validation_freq=validation_freq, lr=lr,
                                         momentum=momentum, partial=partial, betas=betas, weight_decay=weight_decay,
                                         update_lr=update_lr, save=False, dataset_folder=dataset_folder)
 
-        log.info("Feature extractor is creating")
+        log.info("Feature extractor is being created")
         feature_extractor = get_feature_extractor(cnn_model_name, model.eval())
         log.info("Feature extractor is setting to device: " + str(device))
         feature_extractor = feature_extractor.to(device)
@@ -78,9 +78,12 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         log.info("Total class 0 size: " + str(class0_size))
         log.info("Total class 1 size: " + str(class1_size))
 
+        print(X_cnn[0])
         if normalize:
             X_cnn = Normalizer().fit_transform(X_cnn)
         X_cnn = StandardScaler().fit_transform(X_cnn)
+
+        print(X_cnn[0])
 
         log.info("Number of features in X_cnn: " + str(len(X_cnn[0])))
 
@@ -93,8 +96,8 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="alexnet", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file="79.59_PreTrained_alexnet_Adam_dataset_out", img_size=112,
+    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="densenet169", is_pre_trained=True,
+         dataset_folder="dataset", pretrain_file="81.97_PreTrained_densenet169_Adam_dataset_out", img_size=112,
          cv=10, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=23)
 
     log.info("Process Finished")

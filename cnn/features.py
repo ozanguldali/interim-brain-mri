@@ -19,18 +19,19 @@ def extract_features(data_loader, feature_extractor):
     return X, y
 
 
+# Deep Features from FC2
 def alexnet_feature_extractor(model):
     feature_extractor = nn.Sequential(
         model.features,
         model.avgpool,
         nn.Flatten(),
-        *[model.classifier[i] for i in range(3)]
-        # model.classifier
+        *[model.classifier[i] for i in range(5)]
     )
 
     return feature_extractor
 
 
+# Deep Features from Convolution Base
 def resnet_feature_extractor(model):
     feature_extractor = nn.Sequential(
         model.conv1,
@@ -43,30 +44,31 @@ def resnet_feature_extractor(model):
         model.layer4,
         model.avgpool,
         nn.Flatten(),
-        model.fc
     )
 
     return feature_extractor
 
 
+# Deep Features from FC2
 def vgg_feature_extractor(model):
     feature_extractor = nn.Sequential(
         model.features,
         model.avgpool,
         nn.Flatten(),
-        model.classifier
+        *[model.classifier[i] for i in range(4)]
     )
 
     return feature_extractor
 
 
+# Deep Features from Convolution Base
 def densenet_feature_extractor(model):
+    print(model.classifier.in_features)
     feature_extractor = nn.Sequential(
         model.features,
         nn.ReLU(inplace=True),
         nn.AdaptiveMaxPool2d(1),
         nn.Flatten(),
-        model.classifier
     )
 
     return feature_extractor

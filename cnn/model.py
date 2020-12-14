@@ -20,8 +20,8 @@ from util.garbage_util import collect_garbage
 from util.logger_util import log
 
 
-def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, train_loader, test_loader, validation_freq, lr,
-              momentum, partial, betas, weight_decay, update_lr=True, num_epochs=25, save=False,
+def run_model(model_name, optimizer_name, is_pre_trained, fine_tune, test_without_train, train_loader, test_loader,
+              validation_freq, lr, momentum, partial, betas, weight_decay, update_lr=True, num_epochs=25, save=False,
               dataset_folder="dataset"):
     collect_garbage()
 
