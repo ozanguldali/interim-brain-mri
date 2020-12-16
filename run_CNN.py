@@ -50,8 +50,7 @@ def main(save=False, dataset_folder="dataset", batch_size=20, img_size=112, test
 
     else:
         run_model(model_name=model_name, optimizer_name=optimizer_name, is_pre_trained=is_pre_trained,
-                  fine_tune=fine_tune,
-                  test_without_train=test_without_train, train_loader=train_loader, test_loader=test_loader,
+                  fine_tune=fine_tune, train_loader=train_loader, test_loader=test_loader,
                   num_epochs=num_epochs, save=save,
                   update_lr=update_lr, dataset_folder=dataset_folder, validation_freq=validation_freq, lr=lr,
                   momentum=momentum, partial=partial, betas=betas, weight_decay=weight_decay)

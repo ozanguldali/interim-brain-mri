@@ -7,7 +7,7 @@ from util.garbage_util import collect_garbage
 from util.logger_util import log
 
 
-def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_size=112, normalize=True):
+def main(model_name, dataset_folder, seed, cv=5, img_size=112, normalize=True):
 
     kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
@@ -15,12 +15,12 @@ def main(model_name, dataset_folder, seed, lambdas, cv=5, penalty=False, img_siz
     X, y = get_dataset(dataset_folder, img_size, normalize, divide=False)
 
     log.info("Calling the model: " + model_name)
-    run_model(model_name, X, y, penalty, kf, lambdas, seed)
+    run_model(model_name, X, y, kf)
 
     collect_garbage()
 
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(model_name='svm', cv=5, penalty=False, dataset_folder="dataset", img_size=112, normalize=True, seed=23, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0])
+    main(model_name='svm', cv=5, dataset_folder="dataset", img_size=112, normalize=True, seed=23)
     log.info("Process Finished")

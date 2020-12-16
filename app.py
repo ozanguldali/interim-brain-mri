@@ -17,17 +17,15 @@ from util.logger_util import log
 ROOT_DIR = str(os.path.dirname(os.path.abspath(__file__)))
 
 
-def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object = False,
-         dataset_folder="dataset", pretrain_file=None, batch_size=8, img_size=112, num_workers=4,
-         cnn_model_name="", optimizer_name='Adam', validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125,
-         betas=(0.9, 0.99), weight_decay=0.025, update_lr=True, is_pre_trained=False, fine_tune=False, num_epochs=16,
-         normalize=True, lambdas=None, seed=1):
-    if lambdas is None:
-        lambdas = [0.01, 0.05, 0.1, 0.5, 1.0, 5.0]
+def main(transfer_learning, method="", ml_model_name="", cv=5, dataset_folder="dataset",
+         pretrain_file=None, batch_size=8, img_size=112, num_workers=4, cnn_model_name="", optimizer_name='Adam',
+         validation_freq=0.1, lr=0.001, momentum=0.9, partial=0.125, betas=(0.9, 0.99), weight_decay=0.025,
+         update_lr=True, is_pre_trained=False, fine_tune=False, num_epochs=16, normalize=True, seed=1):
 
     if not transfer_learning:
         if method.lower() == "ml":
-            run_ML.main(ml_model_name, dataset_folder, seed, lambdas, cv, penalty, img_size, normalize)
+            run_ML.main(model_name=ml_model_name, dataset_folder=dataset_folder, seed=seed, cv=cv,
+                        img_size=img_size, normalize=normalize)
         elif method.lower() == "cnn":
             run_CNN.main(save=False, dataset_folder=dataset_folder, batch_size=batch_size, test_without_train=False,
                          img_size=img_size, num_workers=num_workers, num_epochs=num_epochs, model_name=cnn_model_name,
@@ -54,7 +52,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
         else:
             log.info("Running CNN model: " + cnn_model_name)
             model = cnn_model.run_model(model_name=cnn_model_name, optimizer_name=optimizer_name, fine_tune=fine_tune,
-                                        is_pre_trained=is_pre_trained, test_without_train=False, train_loader=train_loader, num_epochs=num_epochs,
+                                        is_pre_trained=is_pre_trained, train_loader=train_loader, num_epochs=num_epochs,
                                         test_loader=test_loader, validation_freq=validation_freq, lr=lr,
                                         momentum=momentum, partial=partial, betas=betas, weight_decay=weight_decay,
                                         update_lr=update_lr, save=False, dataset_folder=dataset_folder)
@@ -86,15 +84,15 @@ def main(transfer_learning, method="", ml_model_name="", cv=5, penalty: object =
 
         kf = KFold(n_splits=cv, shuffle=True, random_state=seed)
 
-        ml_model.run_model(ml_model_name, X_cnn, y, penalty, kf, lambdas, seed)
+        ml_model.run_model(ml_model_name, X_cnn, y, kf)
 
     collect_garbage()
 
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=True, ml_model_name="all", penalty=False, cnn_model_name="resnet18", is_pre_trained=True,
+    main(transfer_learning=False, method="ml", ml_model_name="all", cnn_model_name="resnet18", is_pre_trained=True,
          dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", img_size=112,
-         cv=10, lambdas=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0], seed=17)
+         cv=10, seed=17)
 
     log.info("Process Finished")

@@ -1,7 +1,6 @@
 import torch
 
 from cnn import device
-from cnn.architect import InterimNet
 
 
 def load_model(model, path):
@@ -13,4 +12,5 @@ def load_model(model, path):
 
 
 if __name__ == '__main__':
-    load_model(InterimNet(), "")
+    from torchvision import models
+    load_model(models.alexnet(), "")

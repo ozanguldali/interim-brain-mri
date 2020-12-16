@@ -6,34 +6,27 @@ from util.garbage_util import collect_garbage
 from util.logger_util import log
 
 
-def run_model(model_name, X, y, penalty, kf, lambdas, seed):
+def run_model(model_name, X, y, kf):
     collect_garbage()
 
     if model_name == "svm":
-        run_svm(seed, X=X, y=y, penalty=penalty, kf=kf,
-                lambdas=(lambdas if (penalty or penalty is None) else None))
+        run_svm(X=X, y=y, kf=kf)
 
     elif model_name == "lr":
-        run_lr(seed, X=X, y=y, penalty=penalty, kf=kf,
-               lambdas=(lambdas if (penalty or penalty is None) else None))
+        run_lr(X=X, y=y, kf=kf)
 
     elif model_name == "knn":
-        if penalty is None or penalty:
-            log.info("LASSO Penalty approach is not used on KNN. Thus the run is performing with Penalty: False")
-
-        run_knn(X=X, y=y, penalty=False, kf=kf)
+        run_knn(X=X, y=y, kf=kf)
 
     elif model_name == "all":
         log.info("Running ML model: svm")
-        run_svm(seed, X=X, y=y, penalty=penalty, kf=kf,
-                lambdas=(lambdas if (penalty or penalty is None) else None))
+        run_svm(X=X, y=y, kf=kf)
 
         log.info("Running ML model: lr")
-        run_lr(seed, X=X, y=y, penalty=penalty, kf=kf,
-               lambdas=(lambdas if (penalty or penalty is None) else None))
+        run_lr(X=X, y=y, kf=kf)
 
         log.info("Running ML model: knn")
-        run_knn(X=X, y=y, penalty=False, kf=kf)
+        run_knn(X=X, y=y, kf=kf)
 
     else:
         log.fatal("ML model name is not known: " + model_name)
