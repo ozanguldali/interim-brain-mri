@@ -3,7 +3,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.pipeline import Pipeline
 
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import KFold, GridSearchCV
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import roc_auc_score
 
 from ml.dataset import read_dataset, divide_dataset
 
@@ -19,6 +20,7 @@ def get_prediction_kf(kf, model, X, y, tag=None):
     cv = kf.n_splits
     ratios = []
     conf_matrices = []
+    roc_list = []
     for e, (train, test) in enumerate(kf.split(X, y)):
         if not isinstance(X, np.ndarray):
             X = np.array(X)
@@ -30,6 +32,11 @@ def get_prediction_kf(kf, model, X, y, tag=None):
         log.info(str(cv) + "-Fold CV -- Iteration " + str(e) + " Test Success Ratio: " + str(100*success_ratio) + "%")
         ratios.append(success_ratio)
 
+        test_prob = model.predict_proba(X_test)
+        auc = roc_auc_score(y_test, test_prob[:, 1])
+        log.info(str(cv) + "-Fold CV -- Iteration " + str(e) + " AUC Score: " + str(auc))
+        roc_list.append(auc)
+
         conf_matrix = confusion_matrix(y_test.tolist(), model.predict(X_test).tolist())
         log.info(str(cv) + "-Fold CV -- Iteration " + str(e) + " Confusion Matrix:\n" + str(conf_matrix))
         conf_matrices.append(conf_matrix)
@@ -38,6 +45,7 @@ def get_prediction_kf(kf, model, X, y, tag=None):
             writer.add_scalar(tag, success_ratio, e)
 
     log.info(str(cv) + "-Fold CV Average Test Success Ratio: " + str(100 * np.average(np.array(ratios))) + "%")
+    log.info(str(cv) + "-Fold CV Average AUC Score: " + str(np.average(np.array(roc_list))))
     log.info(str(cv) + "-Fold CV Average Confusion Matrix:\n" + str(np.mean(conf_matrices, axis=0)))
 
 

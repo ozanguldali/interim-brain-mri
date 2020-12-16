@@ -19,7 +19,7 @@ def run_svm(seed, X, y, penalty, lambdas=None, kf=None):
 
         if penalty:
             grad_dict = {
-                'classifier': [LinearSVC()],
+                'classifier': [LinearSVC(probability=True)],
                 'classifier__penalty': ['l1'],
                 'classifier__C': lambdas,
                 'classifier__dual': [False],
@@ -31,7 +31,7 @@ def run_svm(seed, X, y, penalty, lambdas=None, kf=None):
             log.info("Best lambda value has determined as: " + str(best_lambda))
             svc_cv = LinearSVC(max_iter=100000, penalty='l1', dual=False, C=best_lambda)
         else:
-            svc_cv = SVC()
+            svc_cv = SVC(probability=True)
 
         get_prediction_kf(kf, svc_cv, X, y, tag)
         log.info("")
