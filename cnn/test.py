@@ -43,33 +43,3 @@ def test_model(model, test_loader, iterator=0):
              .format(conf_matrix[0, 0], conf_matrix[0, 1], conf_matrix[1, 0], conf_matrix[1, 1]))
 
     return 100 * acc
-
-    # model.eval()
-    # total = len(test_data)
-    # labels = []
-    # results_list = []
-    # generated = []
-    # correct = 0
-    # feature_extractor = nn.Sequential(model.features, model.flatten, model.fc1, model.fc2, model.fc3, model.softMax)
-    # with torch.no_grad():
-    #     for _, data in enumerate(test_data):
-    #         actual = data[1]
-    #         labels.append(actual)
-    #         results = feature_extractor(data[0].reshape(-1, data[0].size(0), data[0].size(1), data[0].size(2)))
-    #         results_list.append(results.tolist())
-    #         ratio_0 = results[0].tolist()[0]
-    #         ratio_1 = results[0].tolist()[1]
-    #         if ratio_0 < ratio_1:
-    #             expected = 0
-    #         else:
-    #             expected = 1
-    #
-    #         generated.append(expected)
-    #
-    #         if actual == expected:
-    #             correct += 1
-    # print(labels)
-    # print(results_list)
-    # print(generated)
-    #
-    # print('\nTest accuracy soft max: {}'.format(correct / total))

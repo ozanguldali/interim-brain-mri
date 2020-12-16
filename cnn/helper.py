@@ -10,12 +10,12 @@ from cnn.features import alexnet_feature_extractor, resnet_feature_extractor, vg
 from util.logger_util import log
 
 
-def set_dataset_and_loaders(dataset_folder, augmented, batch_size, img_size, num_workers, normalize=None):
+def set_dataset_and_loaders(dataset_folder, batch_size, img_size, num_workers, normalize=None):
 
     dataset_dir = ROOT_DIR.split("cnn")[0]
 
     log.info("Setting train data")
-    train_data = set_dataset(folder=dataset_dir + dataset_folder + '/train', size=img_size, augmented=augmented, normalize=normalize)
+    train_data = set_dataset(folder=dataset_dir + dataset_folder + '/train', size=img_size, normalize=normalize)
     log.info("Train data length: %d" % len(train_data))
     log.info("Setting test data")
     test_data = set_dataset(folder=dataset_dir + dataset_folder + '/test', size=img_size, normalize=normalize)
@@ -48,3 +48,25 @@ def get_feature_extractor(model_name, model):
         sys.exit(1)
 
     return feature_extractor
+
+
+def set_parameter_requires_grad(model):
+    for param in model.parameters():
+        param.requires_grad = False
+
+
+def get_grad_update_params(model, feature_extract):
+    params_to_update = model.parameters()
+    print("Params to learn:")
+    if feature_extract:
+        params_to_update = []
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                params_to_update.append(param)
+                print("\t", name)
+    else:
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                print("\t", name)
+
+    return params_to_update
