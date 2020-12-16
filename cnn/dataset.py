@@ -3,36 +3,9 @@ from torchvision.transforms import transforms
 from torchvision import datasets, transforms
 
 
-def set_dataset(folder, size=224, augmented=False, normalize=None):
-
-    augmenting_list = [
-        transforms.RandomHorizontalFlip()
-        # transforms.RandomVerticalFlip(),
-        # transforms.RandomRotation((90, 90)),
-        # transforms.RandomRotation((180, 180)),
-        # transforms.RandomRotation((270, 270))
-    ]
-
+def set_dataset(folder, size=112, normalize=None):
     transform = set_transform(resize=size, crop=size, normalize=normalize)
     dataset = datasets.ImageFolder(folder, transform=transform)
-
-    if augmented:
-        for augment_type in augmenting_list:
-            transform = set_transform(resize=size, crop=size, additional=[augment_type])
-            dataset_augmented = datasets.ImageFolder(folder, transform=transform)
-
-            # dataset_unique = tuple(
-            #     set(
-            #         dataset_unique
-            #     ).
-            #     union(set(
-            #         dataset_augmented
-            #         )
-            #     )
-            # )
-
-            dataset += dataset_augmented
-            del dataset_augmented
 
     return dataset
 
@@ -41,7 +14,7 @@ def set_loader(dataset, batch_size=1, shuffle=False, num_workers=1):
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
 
 
-def set_transform(resize=224, crop=224, normalize=None, additional=None):
+def set_transform(resize=112, crop=112, normalize=None, additional=None):
     if normalize is None or normalize is True:
         normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
 
@@ -55,14 +28,31 @@ def set_transform(resize=224, crop=224, normalize=None, additional=None):
         transform_list.extend(additional)
 
     transform_list.extend([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=normalize[0], std=normalize[1])
+        transforms.ToTensor()
     ])
+
+    if normalize is None or normalize is True:
+        normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
+        transform_list.extend([transforms.Normalize(mean=normalize[0], std=normalize[1])])
+    elif normalize is not False:
+        transform_list.extend([transforms.Normalize(mean=normalize[0], std=normalize[1])])
+    else:
+        pass
 
     return transforms.Compose(transform_list)
 
 
-def inv_normalize(tensor, normalize=None):
+def normalize_tensor(tensor, norm_value=None):
+    if norm_value is None:
+        norm_value = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
+        transform = transforms.Normalize(mean=norm_value[0], std=norm_value[1])
+    else:
+        transform = transforms.Normalize(mean=norm_value[0], std=norm_value[1])
+
+    return transform(tensor)
+
+
+def inv_normalize_tensor(tensor, normalize=None):
     if normalize is None or normalize is True:
         normalize = [[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]]
 

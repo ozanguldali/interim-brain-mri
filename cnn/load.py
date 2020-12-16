@@ -1,7 +1,7 @@
 import torch
 
 from cnn import device
-from cnn.architect import ProCNN
+from cnn.architect import InterimNet
 
 
 def load_model(model, path):
@@ -13,4 +13,4 @@ def load_model(model, path):
 
 
 if __name__ == '__main__':
-    load_model(ProCNN(), "/cnn/ProCNN_dataset_kaggle_out.pth")
+    load_model(InterimNet(), "")

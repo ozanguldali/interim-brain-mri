@@ -1,15 +1,8 @@
-import numpy as np
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score, KFold
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC, SVC
-from rpy2.robjects import r
 
-import cnn
-from cnn.features import feature_clean
-from ml import ROOT_DIR
-from ml.helper import get_prediction, get_prediction_cv, get_best_lambda, get_prediction_kf
+from ml.helper import get_best_lambda, get_prediction_kf
 
 from util.logger_util import log
 

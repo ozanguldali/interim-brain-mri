@@ -24,17 +24,17 @@ def run_model(model_name, X, y, penalty, kf, lambdas, seed):
         run_knn(X=X, y=y, penalty=False, kf=kf)
 
     elif model_name == "all":
-        log.info("Running CNN model: svm")
+        log.info("Running ML model: svm")
         run_svm(seed, X=X, y=y, penalty=penalty, kf=kf,
                 lambdas=(lambdas if (penalty or penalty is None) else None))
 
-        log.info("Running CNN model: lr")
+        log.info("Running ML model: lr")
         run_lr(seed, X=X, y=y, penalty=penalty, kf=kf,
                lambdas=(lambdas if (penalty or penalty is None) else None))
 
-        log.info("Running CNN model: knn")
+        log.info("Running ML model: knn")
         run_knn(X=X, y=y, penalty=False, kf=kf)
 
     else:
-        log.fatal("model name is not known: " + model_name)
+        log.fatal("ML model name is not known: " + model_name)
         sys.exit(1)

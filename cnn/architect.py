@@ -1,14 +1,14 @@
 import torch
 import torch.nn as nn
 
-from cnn import ROOT_DIR, device
+from cnn import device
 
-__all__ = ['ProCNN', 'procnn']
+__all__ = ['InterimNet', 'interimnet']
 
 
-class ProCNN(nn.Module):
+class InterimNet(nn.Module):
     def __init__(self):
-        super(ProCNN, self).__init__()
+        super(InterimNet, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=128, kernel_size=9, stride=3, padding=1),
             nn.ReLU(inplace=True),
@@ -53,17 +53,6 @@ class ProCNN(nn.Module):
             nn.Linear(1 * 1 * 1024, 2)
         )
 
-        # self.classifier = nn.Sequential(
-        #     nn.Linear(train * train * 512, 1024),
-        #
-        #     nn.Dropout2d(),
-        #     nn.Linear(train * train * 1024, 1024),
-        #
-        #     nn.ReLU(inplace=True),
-        #     nn.Dropout2d(),
-        #     nn.Linear(train * train * 1024, 3)
-        # )
-
         self.softMax = nn.Softmax(dim=1)
 
     def forward(self, x):
@@ -77,19 +66,17 @@ class ProCNN(nn.Module):
         return x
 
 
-def procnn(pretrained=False, dataset_folder="dataset", **kwargs):
+def interimnet(pretrained=False, dataset_file="dataset", **kwargs):
     r"""ProCNN model architecture from the
 
     Args:
         :param pretrained: If True, returns a model pre-trained on ImageNet
-        :param dataset_folder: pth file name
+        :param dataset_file: stored weights file
     """
-    model = ProCNN()
+    model = InterimNet()
 
     if pretrained:
         map_location = None if torch.cuda.is_available() else device
-        model.load_state_dict(torch.load(ROOT_DIR+"/ProCNN_"+dataset_folder+"_out.pth", map_location=map_location))
-        # model.load_state_dict(torch.load(ROOT_DIR+"/ProCNN_"+dataset_folder+"_out.pth"))
-        # model.eval()
+        model.load_state_dict(torch.load(dataset_file, map_location=map_location))
 
     return model
