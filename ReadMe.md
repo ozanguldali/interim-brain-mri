@@ -31,6 +31,7 @@ To run only ML, only CNN or both as transfer learning, app.py file can be run wi
 - seed: 17
 
 _Example of Transfer Leaning:_
-
+- Unless exists, 84.35_PreTrained_resnet18_Adam_dataset_out.pth file must be downloaded and inserted into "cnn" directory.
+- Link to file: https://github.com/ozanguldali/interim-brain-mri/blob/master/cnn/84.35_PreTrained_resnet18_Adam_dataset_out.pth
 `app.main(transfer_learning=True, ml_model_name="lr", cnn_model_name="resnet18", is_pre_trained=True,
          dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", seed=17)`
