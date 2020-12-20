@@ -32,5 +32,5 @@ To run only ML, only CNN or both as transfer learning, app.py file can be run wi
 
 _Example of Transfer Leaning:_
 
-`app.main(transfer_learning=True, ml_model_name="all", cnn_model_name="resnet18", is_pre_trained=True,
+`app.main(transfer_learning=True, ml_model_name="lr", cnn_model_name="resnet18", is_pre_trained=True,
          dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", seed=17)`

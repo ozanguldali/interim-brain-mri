@@ -91,8 +91,7 @@ def main(transfer_learning, method="", ml_model_name="", cv=10, dataset_folder="
 
 if __name__ == '__main__':
     log.info("Process Started")
-    main(transfer_learning=False, method="ml", ml_model_name="all", cnn_model_name="resnet18", is_pre_trained=True,
-         dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", img_size=112,
-         cv=10, seed=17)
+    main(transfer_learning=True, ml_model_name="lr", cnn_model_name="resnet18", is_pre_trained=True,
+         dataset_folder="dataset", pretrain_file="84.35_PreTrained_resnet18_Adam_dataset_out", seed=17)
 
     log.info("Process Finished")
